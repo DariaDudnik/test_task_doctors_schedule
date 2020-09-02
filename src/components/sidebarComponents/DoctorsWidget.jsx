@@ -81,14 +81,14 @@ const DoctorsWidget = () => {
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               <button className="dropdown-item"
-                onClick={(e) => handleAllCheck(e)}
+                onClick={handleAllCheck}
                 disabled={allChecked}
               >
                 <FontAwesomeIcon icon={faCheck} />
                 Выбрать все
               </button>
               <button className="dropdown-item" href="#"
-                onClick={(e) => handleRemoveCheckAll(e)}
+                onClick={handleRemoveCheckAll}
                 disabled={!allChecked}
                 >
                   <FontAwesomeIcon icon={faTimes} />

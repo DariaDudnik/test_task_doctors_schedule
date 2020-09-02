@@ -11,7 +11,9 @@ const Schedule = () => {
   const timeRangeFrom = useSelector((state) => state.schedule.timeRangeFrom);
   const timeRangeTo = useSelector((state) => state.schedule.timeRangeTo);
   const selectedDate = useSelector((state) => state.schedule.currentDate);
-  const selectedDoctors = useSelector((state) => state.doctors.selectedDoctors);
+
+  const doctorsList = useSelector((state) => state.doctors.doctorsList);
+  const selectedDoctors = useMemo(() => doctorsList.filter(d => d.checked), [doctorsList]);
 
   const daysRange = useMemo(() => {
     const range =  moment.range(timeRangeFrom, timeRangeTo);
@@ -19,7 +21,7 @@ const Schedule = () => {
     return Array.from(range.by('day'));
   }, [timeRangeFrom, timeRangeTo]) ;
 
-  const content = (selectedDoctors || selectedDate)
+  const content = (selectedDoctors.length || selectedDate)
     ? daysRange.map(day =>
       <WeekdayGroup key={day.format('MMM Do YY')} day={day} />)
     : (<div className="empty-data">

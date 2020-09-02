@@ -16,7 +16,6 @@ import moment from 'moment';
 const initialState = {
   doctorsList: [],
   isLoading: false,
-  selectedDoctors: null,
   appointment: {},
   currentDoctor: {},
   appointmentDate: null,
@@ -48,13 +47,6 @@ const doctors = (state = initialState, action) => {
             draftState.doctorsList[doctorIdx].checked = newVal;
           }
         });
-
-        const checkedDoctors = draftState.doctorsList.filter(item => item.checked === true);
-        if(checkedDoctors[0]) {
-          draftState.selectedDoctors = checkedDoctors;
-        } else {
-          draftState.selectedDoctors = null;
-        }
         break;
       case SET_CURRENT_DOCTOR:
         draftState.currentDoctor = action.payload.doctor;
@@ -70,20 +62,9 @@ const doctors = (state = initialState, action) => {
 
           return item;
         });
-        const allCheckedDoctors = draftState.doctorsList.filter(item => item.checked === true);
-        if(allCheckedDoctors.length !== 0) {
-          draftState.selectedDoctors = allCheckedDoctors;
-        } else {
-          draftState.selectedDoctors = null;
-        }
         break;
       case TOGGLE_ALL_DOCTORS:
-        const allDoctors = draftState.doctorsList.map(item => item.checked = action.payload);
-        if(action.payload === true) {
-          draftState.selectedDoctors = allDoctors;
-        } else {
-          draftState.selectedDoctors = [];
-        }
+        draftState.doctorsList.forEach(d => d.checked = action.payload);
         break;
       case CREATE_APPOINTMENT:
         const doctorIdx = draftState.doctorsList.findIndex(doc => doc.id === action.payload.doctorId);

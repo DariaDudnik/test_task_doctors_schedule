@@ -33,6 +33,11 @@
 		background: var(--secondary-color);
 		padding-left: 0.5rem;
 		border-bottom: 1px dashed grey;
+		cursor: default;
+
+    .schedule-day__time_available {
+      cursor: pointer;
+    }
 	}
 	.schedule-day__activity-secondary {
 		background: rgb(155, 155, 155);

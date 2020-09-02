@@ -19,24 +19,26 @@ const AppointmentTime = (props) => {
   const { fillStatus, startMoment } = props;
   const handleClick = useCallback(() => props.showModal(props), [props]);
 
+  const isAvailable = fillStatus.length < 2;
+
   if(!fillStatus.length) {
-    return <div className="schedule-day__time" onClick={handleClick}>{startMoment.format("HH:mm")}</div>
+    return <div className={`schedule-day__time ${isAvailable ? 'schedule-day__time_available' : ''}`} onClick={handleClick}>{startMoment.format("HH:mm")}</div>
   }
 
   const fillContent = fillStatus.map((slot, index) => {
     if(slot.appointmentType === appointmentTypes.PATIENT) {
       const shortName = slot.patient.name.split(/\s+/).map((w,i) => i ? w.substring(0,1).toUpperCase() + '.' : w).join(' ');
       const shortDate = moment(slot.date).format("HH:mm")
-      return (<div className="schedule-day__time" key={index} onClick={handleClick}>{shortDate}{shortName}</div>)
+      return (<div className={`schedule-day__time ${isAvailable ? 'schedule-day__time_available' : ''}`} key={index} onClick={handleClick}>{shortDate}{shortName}</div>)
     }
 
     return (<div key={index} className="schedule-day__activity-secondary">
       {slotCaptions[slot.appointmentType] || ":"}
     </div>);
   });
- 
+
   return (
-    <div className="schedule-table-time-box">
+    <div className={`schedule-table-time-box`}>
       {fillContent}
     </div>
   );

@@ -1,19 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setTimeFilter } from '../../redux/actions/scheduleActions';
 
-
 const DaysFilter = () => {
-  const [activeButton, setActiveButton] = useState(0);
+  const dayFilterInterval = useSelector(state => state.schedule.dayFilterInterval)
   const dispatch = useDispatch();
 
-  const handleTimeRange = (e) => {
-    dispatch(setTimeFilter(e.target.value));
-    setActiveButton(e.target.value);
-  }
+  const handleTimeRange = (range) => () => dispatch(setTimeFilter(range));
 
   return (
     <ButtonToolbar className="schedule-table-filter" >
@@ -22,20 +18,20 @@ const DaysFilter = () => {
         <Button
           value={0}
           variant="success"
-          onClick={(e) => handleTimeRange(e)}
-          active={activeButton === 0}
+          onClick={handleTimeRange(0)}
+          active={dayFilterInterval === 0}
           >1 день</Button>
         <Button
           value={1}
           variant="success"
-          onClick={(e) => handleTimeRange(e)}
-          active={activeButton === 1}
+          onClick={handleTimeRange(1)}
+          active={dayFilterInterval === 1}
           >2 дня</Button>
-        <Button 
+        <Button
           variant="success"
           value={6}
-          onClick={(e) => handleTimeRange(e)} 
-          active={activeButton === 6}
+          onClick={handleTimeRange(6)}
+          active={dayFilterInterval === 6}
           >Неделя
         </Button>
       </ButtonGroup>

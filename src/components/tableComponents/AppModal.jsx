@@ -212,7 +212,7 @@ const AppModal = ({ handleClose, show, modalData }) => {
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">assignment</i></div>
             <span
             style={isDisabledToCancel ? customStyles.disabled : {}}
-            onClick={() => handleAppShow()}
+            onClick={handleAppShow}
             > 
             Просмотреть запись
             </span>
@@ -221,7 +221,7 @@ const AppModal = ({ handleClose, show, modalData }) => {
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">create</i></div>
             <span
               style={isDisabledToCreate ? customStyles.disabled : customStyles.modalBodyCreateSpan}
-              onClick={() => handleAppCreation()}
+              onClick={handleAppCreation}
               >
                 Создать запись
             </span>
@@ -230,7 +230,7 @@ const AppModal = ({ handleClose, show, modalData }) => {
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">delete</i></div>
             <span
               style={isDisabledToCancel ? customStyles.disabled : customStyles.modalBodyCancelSpan}
-              onClick={() => handleAppCancellation()}
+              onClick={handleAppCancellation}
               >
                 Отменить запись
                 </span>

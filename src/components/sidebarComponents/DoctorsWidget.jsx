@@ -5,7 +5,7 @@ import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DoctorsList from './DoctorsList';
 import { requestDoctorsList } from '../../redux/actions/doctorsActions';
-import { selectDoctor, toggleAllDoctors, toggleDoctorsByType } from '../../redux/actions/doctorsActions';
+import { toggleDoctor, toggleAllDoctors, toggleDoctorsByType } from '../../redux/actions/doctorsActions';
 
 const DoctorsWidget = () => {
   const list = useSelector(state => state.doctors.doctorsList);
@@ -27,7 +27,7 @@ const DoctorsWidget = () => {
   }, [list])
 
   const handleDoctorSelect = (id) => {
-    dispatch(selectDoctor(id));
+    dispatch(toggleDoctor(id));
     setSearchTerm('');
   };
 

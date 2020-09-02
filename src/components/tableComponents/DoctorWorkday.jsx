@@ -1,21 +1,23 @@
 import React, { useCallback, memo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import MomentA from 'moment';
+import moment from 'moment';
 import Moment from 'react-moment';
-import { extendMoment } from 'moment-range';
 import AppModal from './AppModal';
-import { selectDoctor } from '../../redux/actions/doctorsActions';
+import { setCurrentDoctor } from '../../redux/actions/doctorsActions';
 import { appointmentTypes } from '../../redux/constants/constants';
 
-const moment = extendMoment(MomentA);
 const hour = 60;
 
-const AppointmentTime = ({ fillStatus, rangeString, startMoment, showModal }) => {
-  const handleClick = useCallback(() => 
-    showModal({startMoment, rangeString, fillStatus}),
-      [startMoment, rangeString, showModal, fillStatus]
-  );
+const slotCaptions = {
+  [appointmentTypes.STUDY]: 'Обучение',
+  [appointmentTypes.PAPERWORK]: 'Работа с документами',
+  [appointmentTypes.OFF]: 'Врач не работает',
+  [appointmentTypes.NOAPP]: 'Врач не принимает',
+}
 
+const AppointmentTime = (props) => {
+  const { fillStatus, startMoment } = props;
+  const handleClick = useCallback(() => props.showModal(props), [props]);
 
   if(!fillStatus.length) {
     return <div className="schedule-day__time" onClick={handleClick}>{startMoment.format("HH:mm")}</div>
@@ -27,21 +29,11 @@ const AppointmentTime = ({ fillStatus, rangeString, startMoment, showModal }) =>
       const shortDate = moment(slot.date).format("HH:mm")
       return (<div className="schedule-day__time" key={index} onClick={handleClick}>{shortDate}{shortName}</div>)
     }
-    if(slot.appointmentType === appointmentTypes.STUDY) {
-      return (<div key={index} className="schedule-day__activity-secondary">Обучение</div>)
-    }
-    if(slot.appointmentType === appointmentTypes.PAPERWORK) {
-      return (<div key={index} className="schedule-day__activity-secondary">Работа с документами</div>)
-    }
-    if(slot.appointmentType === appointmentTypes.OFF) {
-      return (<div key={index} className="schedule-day__activity-secondary">Врач не работает</div>)
-    }
-    if(slot.appointmentType === appointmentTypes.NOAPP) {
-      return (<div key={index} className="schedule-day__activity-secondary">Врач не принимает</div>)
-    }
 
-    return( <div key={index} className="schedule-day__activity-secondary">":"</div>)
-  })
+    return (<div key={index} className="schedule-day__activity-secondary">
+      {slotCaptions[slot.appointmentType] || ":"}
+    </div>);
+  });
  
   return (
     <div className="schedule-table-time-box">
@@ -51,13 +43,13 @@ const AppointmentTime = ({ fillStatus, rangeString, startMoment, showModal }) =>
 }
 
 const DoctorWorkday = ({ doctor, day }) => {
-  const [showAppModal, setShowModal] = useState(false);
   const [modalData, setModalData] = useState(null);
+  const dispatch = useDispatch();
+
   const timeRange = parseInt(doctor.end, 10) - parseInt(doctor.start, 10);
   const intervalMinutes = timeRange * hour;
   const appointmentsNumber = intervalMinutes / parseInt(doctor.interval, 10);
   const appointmentSlots = [];
-  const dispatch = useDispatch();
 
   for (let i = 0; i < appointmentsNumber; i++) {
     const start = parseInt(doctor.start, 10) * 60;
@@ -75,7 +67,6 @@ const DoctorWorkday = ({ doctor, day }) => {
     periodStartMoment.set('hour', curHours);
     periodStartMoment.set('minute', curMins);
 
-
     const fillStatus =  doctor.appointments.filter(app => { 
       if(app.date){
         return moment(app.date).isSame(periodStartMoment);
@@ -88,7 +79,7 @@ const DoctorWorkday = ({ doctor, day }) => {
         if(isCurDay) {
           const currentDayFrom = moment(day).hours(app.timeFrom.substring(0,2)).minutes(app.timeFrom.substring(0,-2));
           const currentDayTo = moment(day).hours(app.timeTo.substring(0,2)).minutes(app.timeTo.substring(0,-2));
-          const isTime= moment(periodStartMoment).isBetween(currentDayFrom, currentDayTo, undefined, '[]');
+          const isTime = moment(periodStartMoment).isBetween(currentDayFrom, currentDayTo, undefined, '[]');
           return isTime;
         }
         return moment(app.date).isSame(periodStartMoment);
@@ -105,14 +96,12 @@ const DoctorWorkday = ({ doctor, day }) => {
   }
 
   const showModal = modalData => {
+    dispatch(setCurrentDoctor(doctor, modalData.startMoment));
     setModalData(modalData);
-    setShowModal(true);
-    dispatch(selectDoctor(doctor.id, modalData.startMoment));
   };
 
-
   const handleClose = () => {
-    setShowModal(false);
+    setModalData(null);
   };
 
   return (
@@ -129,10 +118,10 @@ const DoctorWorkday = ({ doctor, day }) => {
           <div className="schedule-day__activity-body">{doctor.start}-{doctor.end}</div>
         </div>
         <div  className="schedule-day__time">
-          {appointmentSlots.map(({ time, rangeString, startMoment, fillStatus }, index) =>
+          {appointmentSlots.map(({ time, rangeString, startMoment, fillStatus }) =>
             <AppointmentTime
+              key={rangeString}
               time={time}
-              key={index}
               rangeString={rangeString}
               startMoment={startMoment}
               showModal={showModal}
@@ -142,12 +131,12 @@ const DoctorWorkday = ({ doctor, day }) => {
         </div>
       </article>
 
-    <AppModal
-      show={showAppModal}
-      handleClose={handleClose}
-      modalData={modalData}
-    />
-  </div>
+      <AppModal
+        show={modalData !== null}
+        handleClose={handleClose}
+        modalData={modalData}
+      />
+    </div>
   );
 }
 

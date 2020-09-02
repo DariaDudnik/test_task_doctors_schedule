@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Dropdown from 'react-bootstrap/Dropdown';
-import throttle from 'lodash/throttle';
 import PatientDropdown from './PatientDropdown';
+import { useThrottle } from '../../utils/useThrottle';
 import {
   requestPatientsList, selectPatient,
 } from '../../redux/actions/patientsActions';
@@ -10,24 +10,33 @@ import PatientsCard from './PatientsCard';
 
 const SearchWidget = () => {
   const selectedPatient = useSelector((state) => state.patients.selectedPatient);
-  const list = useSelector((state) => state.patients);
+  const patientList = useSelector((state) => state.patients.patientList);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const dispatch = useDispatch();
 
-  const throttledSearchTerm = useRef(throttle((query) => setSearchTerm(query), 500)).current;
+  const throttledFilter = useThrottle((query, patientList) => {
+    const lowQuery = query.toLowerCase();
+    if (lowQuery.length < 3) {
+      setSearchResults([]);
+      return;
+    }
+
+    const filtered = patientList.filter(({ name, healthInsuranceNumber }) =>
+      name.toLowerCase().includes(lowQuery) || healthInsuranceNumber.toLowerCase().includes(lowQuery)
+    );
+
+    setSearchResults(filtered);
+  }, 1000);
 
   useEffect(() => {
     dispatch(requestPatientsList());
   }, [dispatch]);
 
   const handleChange = (event) => {
-    const results = list.patientList
-      .filter((person) => person.name.toLowerCase().includes(event.target.value)
-      || person.healthInsuranceNumber.toLowerCase().includes(event.target.value));
-
-    throttledSearchTerm(event.target.value);
-    setSearchResults(results);
+    const text = event.target.value;
+    setSearchTerm(text);
+    throttledFilter(text, patientList);
   };
 
   const handlePatientSelect = (patient) => {
@@ -35,18 +44,25 @@ const SearchWidget = () => {
     setSearchTerm('');
   };
 
-  const searchItems = searchResults.map((patient) => (
-    <Dropdown.Item
-      eventKey="1"
-      onClick={() => handlePatientSelect(patient)}
-      id={patient.id}
-    >
-      {patient.name},
-      {patient.healthInsuranceNumber}
-    </Dropdown.Item>
-  ));
+  let searchContent;
 
-  const nothingFound = <Dropdown.Item>Ничего не найдено</Dropdown.Item>;
+  if (searchTerm.length < 3) {
+    searchContent = '';
+  } else if (searchResults.length) {
+    searchContent = searchResults.map((patient) => (
+      <Dropdown.Item
+        key={patient.id}
+        eventKey="1"
+        onClick={() => handlePatientSelect(patient)}
+        id={patient.id}
+      >
+        {patient.name},
+        {patient.healthInsuranceNumber}
+      </Dropdown.Item>
+    ));
+  } else {
+    searchContent = <Dropdown.Item>Ничего не найдено</Dropdown.Item>;
+  }
 
   return (
     <div className="left-bar-container__block">
@@ -73,7 +89,7 @@ const SearchWidget = () => {
                 <span><i className="large material-icons">search</i></span>
               </div>
             </div>
-            {(searchItems.length === 0) ? (searchTerm !== '' && nothingFound) : (searchTerm.length >= 3 && searchItems)}
+            {searchContent}
           </div>
         )}
     </div>

@@ -12,7 +12,6 @@ const normalThrottle = (fn, delay) => {
     }
 
     timeout = setTimeout(() => {
-      console.log('timeout fired')
       timeout = null;
       fn(...cachedArgs);
     }, delay);
@@ -20,10 +19,5 @@ const normalThrottle = (fn, delay) => {
 }
 
 export function useThrottle(fn, delay) {
-  const fun = useRef(normalThrottle(fn, delay)).current;
-
-  return (...args) => {
-    console.log('using my throttle')
-    return fun(...args);
-  }
+  return useRef(normalThrottle(fn, delay)).current;
 }

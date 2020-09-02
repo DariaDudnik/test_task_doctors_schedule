@@ -2,7 +2,8 @@ import {
   REQUEST_DOCTORS_LIST,
   REQUEST_DOCTORS_LIST_SUCCESS,
   REQUEST_DOCTORS_LIST_FAILED,
-  SELECT_DOCTOR,
+  TOGGLE_DOCTOR,
+  SET_CURRENT_DOCTOR,
   TOGGLE_ALL_DOCTORS,
   TOGGLE_DOCTORS_BY_TYPE,
   CREATE_APPOINTMENT,
@@ -55,13 +56,18 @@ const doctors = (state = initialState, action) => {
           draftState.selectedDoctors = null;
         }
         break;
-      case SELECT_DOCTOR:
-        draftState.doctorsList.map(item => {
+      case SET_CURRENT_DOCTOR:
+        draftState.currentDoctor = action.payload.doctor;
+        if (action.payload.date) {
+          draftState.appointmentDate = action.payload.date;
+        }
+        break;
+      case TOGGLE_DOCTOR:
+        draftState.doctorsList.forEach(item => {
           if(item.id === action.payload) {
             item.checked = !item.checked;
-            draftState.currentDoctor = item;
           }
-          
+
           return item;
         });
         const allCheckedDoctors = draftState.doctorsList.filter(item => item.checked === true);
@@ -69,9 +75,6 @@ const doctors = (state = initialState, action) => {
           draftState.selectedDoctors = allCheckedDoctors;
         } else {
           draftState.selectedDoctors = null;
-        }
-        if(action.date){
-          draftState.appointmentDate = action.date;
         }
         break;
       case TOGGLE_ALL_DOCTORS:
@@ -87,12 +90,8 @@ const doctors = (state = initialState, action) => {
         if (doctorIdx === -1) {
           return;
         }
-        draftState.doctorsList[doctorIdx].appointments.push({
-          date: action.payload.date,
-          appointmentType: action.payload.appointmentType,
-          patient: action.payload.patient,
-        });
 
+        draftState.doctorsList[doctorIdx].appointments.push(action.payload);
         break;
       case CANCEL_APPOINTMENT:
         const doctorCancelIdx = draftState.doctorsList.findIndex(doc => doc.id === action.payload.doctorId);

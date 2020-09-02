@@ -5,17 +5,24 @@ import moment from 'moment';
 
 const WeekdayGroup = ({ day }) => {
   const doctors = useSelector(state => state.doctors.doctorsList);
-  const checkedDoctors = doctors.filter(d => d.checked === true);
 
-  const selectedDoctors = checkedDoctors.length ? checkedDoctors : doctors;
+  const workingDoctors = useMemo(() => {
+    if (!doctors) {
+      return [];
+    }
 
-  const workingDoctors = useMemo(() => selectedDoctors.filter((doctor) => {
-    const workWeekFrom = moment(day).isoWeekday(doctor.workWeekStart);
-    const workWeekTo = moment(day).isoWeekday(doctor.workWeekTo);
-    const isWorkingDay = moment(day).isBetween(workWeekFrom, workWeekTo, undefined, '[]');
+    const checkedDoctors = doctors.filter(d => d.checked);
+    const selectedDoctors = checkedDoctors.length ? checkedDoctors : doctors;
 
-    return isWorkingDay;
-  }), [day, selectedDoctors]);
+    return selectedDoctors.filter((doctor) => {
+      const workWeekFrom = moment(day).isoWeekday(doctor.workWeekStart);
+      const workWeekEnd = moment(day).isoWeekday(doctor.workWeekEnd);
+
+      const isWorkingDay = moment(day).isBetween(workWeekFrom, workWeekEnd, undefined, '[]');
+
+      return isWorkingDay;
+    })
+  }, [day, doctors]);
 
   return <div className="main-container__schedule">
     {workingDoctors.map(doctor => (

@@ -7,7 +7,7 @@ import {
 
 import { requestDoctorsListSuccess } from '../actions/doctorsActions';
 
-function *fetchDoctors(action) {
+function *fetchDoctors() {
   try {
     const data = yield call(getDoctorsList);
 

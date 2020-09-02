@@ -1,7 +1,8 @@
 import {
   REQUEST_DOCTORS_LIST,
   REQUEST_DOCTORS_LIST_SUCCESS,
-  SELECT_DOCTOR,
+  TOGGLE_DOCTOR,
+  SET_CURRENT_DOCTOR,
   TOGGLE_ALL_DOCTORS,
   TOGGLE_DOCTORS_BY_TYPE,
   CREATE_APPOINTMENT,
@@ -19,10 +20,17 @@ export const requestDoctorsListSuccess = (list) => ({
   type: REQUEST_DOCTORS_LIST_SUCCESS,
 });
 
-export const selectDoctor = (id, date) => ({
+export const toggleDoctor = (id) => ({
   payload: id,
-  date,
-  type: SELECT_DOCTOR,
+  type: TOGGLE_DOCTOR,
+});
+
+export const setCurrentDoctor = (doctor, date) => ({
+  payload: {
+    doctor,
+    date
+  },
+  type: SET_CURRENT_DOCTOR,
 });
 
 export const toggleDoctorsByType = (ids, newVal) => ({

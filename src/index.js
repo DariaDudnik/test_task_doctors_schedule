@@ -6,7 +6,6 @@ import { store } from './store/configureStore';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import { BrowserRouter as Route } from 'react-router-dom'
 
 ReactDOM.render(
   <React.StrictMode>

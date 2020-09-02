@@ -10,8 +10,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import { selectDate, toggleCalendar } from '../../redux/actions/scheduleActions';
 
-
-
 registerLocale('ru', ru);
 
 const DateWidget = () => {

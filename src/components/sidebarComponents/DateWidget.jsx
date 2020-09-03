@@ -15,7 +15,17 @@ registerLocale('ru', ru);
 const DateWidget = () => {
   const selectedDate = useSelector(state => state.schedule.currentDate);
   const datePickerIsOpen = useSelector(state => state.schedule.datePickerIsOpen);
+  const haveCheckedDoctors = useSelector(state => state.doctors.doctorsList.some(doc => doc.checked));
+
   const dispatch = useDispatch();
+
+  const handleToggle = () => {
+    if (!haveCheckedDoctors) {
+      return;
+    }
+
+    dispatch(toggleCalendar(!datePickerIsOpen));
+  }
 
   return (
     <div className="left-bar-container__block">
@@ -36,12 +46,13 @@ const DateWidget = () => {
           showDisabledMonthNavigation
           className="search-bar-date-calendar"
           open={datePickerIsOpen}
-          onBlur={() => dispatch(toggleCalendar(datePickerIsOpen === false))}
+          onBlur={() => dispatch(toggleCalendar(false))}
+          disabled={!haveCheckedDoctors}
         />
         <button
           className="btn btn-secondary search-bar-date-icon"
           size="sm"
-          onClick={() => dispatch(toggleCalendar(!datePickerIsOpen))}
+          onClick={handleToggle}
         >
         <FontAwesomeIcon 
           icon={faCalendarAlt}

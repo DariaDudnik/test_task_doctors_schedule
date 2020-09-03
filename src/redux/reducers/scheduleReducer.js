@@ -6,8 +6,13 @@ import {
 import produce from "immer";
 import moment from 'moment';
 
+const todayStart = new Date();
+todayStart.setHours(0);
+todayStart.setMinutes(0);
+todayStart.setSeconds(0);
+
 const initialState = {
-  currentDate: null,
+  currentDate: todayStart,
   datePickerIsOpen: false,
   timeRangeFrom: moment(),
   timeRangeTo: moment(),
@@ -30,11 +35,11 @@ const schedule = (state = initialState, action) => {
         draftState.datePickerIsOpen = action.payload;
         break;
       case SET_TIME_FILTER:
-        const timeFilter = moment(draftState.currentDate).add(action.payload, 'days')
-        if(draftState.currentDate !== null) {
-          draftState.timeRangeFrom = draftState.currentDate;
-          draftState.timeRangeTo = timeFilter;
-        }
+        const timeRangeFrom = moment(draftState.currentDate);
+        const timeRangeTo = moment(draftState.currentDate).add(action.payload, 'days');
+
+        draftState.timeRangeFrom = timeRangeFrom;
+        draftState.timeRangeTo = timeRangeTo;
         draftState.dayFilterInterval = action.payload;
         break;
       default:

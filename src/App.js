@@ -11,8 +11,8 @@ function App() {
   return (
     <div className="App">
       <HeaderLine />
-      <ScheduleTable />
       <SearchSideBar />
+      <ScheduleTable />
     </div>
   );
 }

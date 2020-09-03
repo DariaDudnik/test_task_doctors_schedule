@@ -43,27 +43,34 @@ const DoctorsWidget = () => {
   }
 
   const handleSearch = event => {
-    const results = list.filter(person => 
-      (person.name.toLowerCase().indexOf(event.target.value) === 0 )||
-      (person.type.toLowerCase().indexOf(event.target.value) === 0)
-      )
-    setSearchTerm(event.target.value);
+    const text = event.target.value;
+
+    const results = list.filter(({ name, type }) =>
+      name.toLowerCase().indexOf(text) === 0 ||
+      type.toLowerCase().indexOf(text) === 0
+    );
+    setSearchTerm(text);
     setSearchResults(results);
   };
 
-  const searchItems = searchResults.map(doctor => (
-    <Dropdown.Item
-      eventKey="1"
-      onClick={() => handleDoctorSelect(doctor.id)}
-      id={doctor.id}
-    >
-      {doctor.name}({doctor.type})
-    </Dropdown.Item>))
-
-  const nothingFound = <Dropdown.Item>Ничего не найдено</Dropdown.Item>
+  let searchItems;
+  if (searchTerm < 3) {
+    searchItems = '';
+  } else if (!searchResults.length) {
+    searchItems = <Dropdown.Item>Ничего не найдено</Dropdown.Item>
+  } else {
+    searchItems = searchResults.map(doctor => (
+      <Dropdown.Item
+        eventKey="1"
+        onClick={() => handleDoctorSelect(doctor.id)}
+        id={doctor.id}
+      >
+        {doctor.name}({doctor.type})
+      </Dropdown.Item>));
+  }
 
   return (
-    <div>
+    <React.Fragment>
       <div className="left-bar-container__block__top">
         <div className="d-flex">
           <h5 className="mr-1 leftbar-title">Специалисты</h5>
@@ -110,7 +117,7 @@ const DoctorsWidget = () => {
               <span><i className="large material-icons">search</i></span>
           </div>
         </div>
-        {(searchItems.length === 0) ? (searchTerm !== '' && nothingFound) : (searchTerm.length >= 3 && searchItems)}
+        {searchItems}
         <div className='leftbar-filter-toggler'>
           <button
             onClick={() => setGroupedByType(false)}
@@ -126,7 +133,7 @@ const DoctorsWidget = () => {
           </button>
         </div>
       </div>
-      <div className="leftbar-list mt-3">
+      <div className="leftbar-list">
         <DoctorsList
           doctors={list}
           groupedByType={groupedByType}
@@ -134,7 +141,7 @@ const DoctorsWidget = () => {
           handleAllCheckByType={handleAllCheckByType}
         />
       </div>
-    </div>
+    </React.Fragment>
   );
 };
 

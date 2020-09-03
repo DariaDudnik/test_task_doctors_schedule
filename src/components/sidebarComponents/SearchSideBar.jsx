@@ -4,7 +4,7 @@ import DateWidget from './DateWidget';
 import DoctorsWidget from './DoctorsWidget';
 
 const SearchSideBar = () => (
-<div className="left-bar-container">
+  <div className="left-bar-container">
     <SearchWidget />
     <DateWidget />
     <DoctorsWidget />

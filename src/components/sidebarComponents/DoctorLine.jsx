@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 
 const DoctorLine = ({ doctor: { id, name, checked, room, type }, handleDoctorSelect, listType }) => (
   <div>
-    <hr />
+    <hr className="doctor-list-item" />
     <li className="leftbar-list__category-item">
       <input
         id="category"

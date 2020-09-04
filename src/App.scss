@@ -22,6 +22,9 @@
     background-color: #e8e8ea;
     color: #515153;
     overflow-y: auto;
+    -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
+    -moz-box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
   }
   .search-bar-date {
     display: grid;
@@ -137,7 +140,7 @@
       }
     }
   }
-  
+
   .top-black-border {
     background: black;
     height: 4vh;
@@ -149,9 +152,6 @@
   .left-bar-container {
     background: var(--secondary-color);
     min-width: 345px;
-    -webkit-box-shadow: 8px 0px 7px -10px rgba(0,0,0,0.75);
-    -moz-box-shadow: 8px 0px 7px -10px rgba(0,0,0,0.75);
-    box-shadow: 8px 0px 7px -10px rgba(0,0,0,0.75);
     z-index: 1;
     height: calc(100vh - 30px);
     display: flex;
@@ -260,6 +260,8 @@
     width: 100%;
     list-style-type: none;
     text-align: left;
+    display: flex;
+    align-items: baseline;
   }
   .doctors-checkbox-name {
     margin-right: 10px;

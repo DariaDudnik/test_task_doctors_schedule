@@ -29,7 +29,7 @@ const AppointmentTime = (props) => {
     if(slot.appointmentType === appointmentTypes.PATIENT) {
       const shortName = slot.patient.name.split(/\s+/).map((w,i) => i ? w.substring(0,1).toUpperCase() + '.' : w).join(' ');
       const shortDate = moment(slot.date).format("HH:mm")
-      return (<div className={`schedule-day__time ${isAvailable ? 'schedule-day__time_available' : ''}`} key={index} onClick={handleClick}>{shortDate}{shortName}</div>)
+      return (<div className={`schedule-day__time ${isAvailable ? 'schedule-day__time_available' : ''}`} key={index} onClick={handleClick}>{shortDate} {shortName}</div>)
     }
 
     return (<div key={index} className="schedule-day__activity-secondary">
@@ -53,16 +53,18 @@ const DoctorWorkday = ({ doctor, day }) => {
   const appointmentsNumber = intervalMinutes / parseInt(doctor.interval, 10);
   const appointmentSlots = [];
 
+  const [ startHours, startMinutes ] = doctor.start.split(':').map(x => Number.parseInt(x, 10));
+  const start = startHours * hour + startMinutes;
   for (let i = 0; i < appointmentsNumber; i++) {
-    const start = parseInt(doctor.start, 10) * 60;
     const cur = start + doctor.interval * i;
     const curHours = Math.floor(cur / 60);
     const curMins = cur % 60;
     const curMinsString = ('0'+curMins).substr(-2);
 
-    const next = start + doctor.interval * i;
+    const next = cur + doctor.interval;
     const nextHours = Math.floor(next / 60);
-    const nextMins = next % 60 + doctor.interval;
+    const nextMins = next % 60;
+    console.log('next was', next, 'so nextHours', nextHours, 'nextMins', nextMins);
     const nextMinsString = ('0'+nextMins).substr(-2);
 
     const periodStartMoment = moment(day);

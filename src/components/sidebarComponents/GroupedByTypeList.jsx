@@ -9,14 +9,15 @@ const GroupedByTypeList =({ data, name, handleDoctorSelect, handleAllCheckByType
     const childrenIds = useMemo(() => list.map(item => item.id), [list]);
 
     return (
-      <label htmlFor="category" className="leftbar-list__category-label">
-        <div className="text-left">
+      <div className="leftbar-list__category-label">
+        <div 
+          onClick={() => handleAllCheckByType(childrenIds, !allChecked)}
+          className="text-left"
+        >
           <input
             type='checkbox'
-            name="doctors-check"
             className="doctors-checkbox-name"
             checked={allChecked}
-            onChange={() => handleAllCheckByType(childrenIds, !allChecked)}
           />
           <span className="p-3 d-inline-block">{name}</span>
         </div>
@@ -25,7 +26,7 @@ const GroupedByTypeList =({ data, name, handleDoctorSelect, handleAllCheckByType
             <DoctorLine key={doctor.id} doctor={doctor} handleDoctorSelect={handleDoctorSelect} />
           ))
         }
-      </label>
+      </div>
     );
   }
 

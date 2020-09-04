@@ -183,11 +183,11 @@ const AppModal = ({ handleClose, show, modalData }) => {
 
   const handleSuccess = () => {
     setShowModalSuccess(true);
-    setTimeout(() => setShowModalSuccess(false), 3000);
+    setTimeout(() => handleSuccessClose, 3000);
   }
 
   const handleSuccessClose = () => {
-    setShowModalCancel(false);
+    setShowModalSuccess(false);
   }
 
   const isDisabledToCreate = !(selectedPatient && (data.fillStatus && data.fillStatus.length <2));

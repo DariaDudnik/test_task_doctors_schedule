@@ -57,7 +57,7 @@ const DoctorsWidget = () => {
   if (searchTerm < 3) {
     searchItems = '';
   } else if (!searchResults.length) {
-    searchItems = <Dropdown.Item>Ничего не найдено</Dropdown.Item>
+    searchItems = <Dropdown.Item>Совпадений не найдено</Dropdown.Item>
   } else {
     searchItems = searchResults.map(doctor => (
       <Dropdown.Item

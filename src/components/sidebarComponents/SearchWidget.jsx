@@ -61,7 +61,7 @@ const SearchWidget = () => {
       </Dropdown.Item>
     ));
   } else {
-    searchContent = <Dropdown.Item>Ничего не найдено</Dropdown.Item>;
+    searchContent = <Dropdown.Item>Совпадений не найдено</Dropdown.Item>;
   }
 
   return (

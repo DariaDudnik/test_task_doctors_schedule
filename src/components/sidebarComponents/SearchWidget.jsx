@@ -56,8 +56,10 @@ const SearchWidget = () => {
         onClick={() => handlePatientSelect(patient)}
         id={patient.id}
       >
-        {patient.name},
-        {patient.healthInsuranceNumber}
+        <div className="patient-search-card">
+          <p>{patient.healthInsuranceNumber},</p>
+          <p>{patient.name}</p>
+        </div>
       </Dropdown.Item>
     ));
   } else {

@@ -110,6 +110,14 @@
       margin: 0;
     }
   }
+  .patient-search-card{
+    display: grid;
+    font-size: 14px;
+    text-align: left;
+    p {
+      margin: 0;
+    }
+  }
   .schedule-table-filter {
     justify-content: space-between !important;
     padding: 0 20px;
@@ -269,6 +277,7 @@
   .dropdown-item {
     overflow: hidden;
     text-overflow: ellipsis;
+    padding: .25rem;
     svg {
       margin-right: 5px;
     }

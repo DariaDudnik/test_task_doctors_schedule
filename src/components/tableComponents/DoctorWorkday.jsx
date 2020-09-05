@@ -33,7 +33,11 @@ const AppointmentTime = memo((props) => {
 
   if (!fillStatus.length) {
     return (
-      <div className={`schedule-day__time ${isAvailable ? 'schedule-day__time_available' : ''}`} onClick={handleClick(null)}>
+      <div
+        className={`schedule-day__time ${isAvailable ? 'schedule-day__time_available' : ''}`}
+        onClick={handleClick(null)}
+        title={isAvailable && 'Время доступно для записи'}
+      >
         {startMoment.format("HH:mm")}
       </div>
     );

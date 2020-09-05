@@ -51,6 +51,7 @@ const AppointmentTime = memo((props) => {
           <div
             className={`schedule-day__time schedule-table-time-box__appointment  ${isAvailable ? 'schedule-day__time_available' : ''}`}
             onClick={handleClick(slot)}
+            title={`${rangeString} ${shortName}`}
           >
             {shortName}
           </div>

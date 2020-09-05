@@ -91,7 +91,7 @@ const DoctorWorkday = ({ doctor, day }) => {
     periodStartMoment.set('hour', curHours);
     periodStartMoment.set('minute', curMins);
 
-    const fillStatus =  doctor.appointments.filter(app => { 
+    const fillStatus =  doctor.appointments.filter(app => {
       if(app.appointmentType === appointmentTypes.PATIENT && app.date){
         return moment(app.date).isSame(periodStartMoment);
       }
@@ -104,8 +104,7 @@ const DoctorWorkday = ({ doctor, day }) => {
         if(isCurDay) {
           const currentDayFrom = moment(day).hours(app.timeFrom.substring(0,2)).minutes(app.timeFrom.substring(0,-2));
           const currentDayTo = moment(day).hours(app.timeTo.substring(0,2)).minutes(app.timeTo.substring(0,-2));
-          const isTime = moment(periodStartMoment).isBetween(currentDayFrom, currentDayTo, undefined, '[]');
-          return isTime;
+          return moment(periodStartMoment).isBetween(currentDayFrom, currentDayTo, undefined, '[]');
         }
         return moment(app.date).isSame(periodStartMoment);
       }

@@ -33,7 +33,14 @@
             "documentsFrom": "14:30",
             "documentsTo": "17:40",
             "workWeekStart": "вт",
-            "workWeekEnd": "пт"
+            "workWeekEnd": "пт",
+            "appointments": [{
+                "dayFrom": "пн",
+                "dayTo": "вт",
+                "timeFrom": "10:00",
+                "timeTo": "15:00",
+                "appointmentType": "STUDY"
+            }]
         },
         {
             "id": 3,
@@ -63,7 +70,23 @@
             "documentsFrom": "14:30",
             "documentsTo": "16:40",
             "workWeekStart": "пн",
-            "workWeekEnd": "пт"
+            "workWeekEnd": "пт",
+            "appointments": [
+                {
+                    "dayFrom": "пн",
+                    "dayTo": "пт",
+                    "timeFrom": "14:30",
+                    "timeTo": "14:55",
+                    "appointmentType": "PAPERWORK"
+                },
+                {
+                    "dayFrom": "пн",
+                    "dayTo": "пт",
+                    "timeFrom": "16:20",
+                    "timeTo": "16:40",
+                    "appointmentType": "PAPERWORK"
+                }
+            ]
         },
         {
             "id": 5,

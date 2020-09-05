@@ -54,6 +54,7 @@
 	}
 
 	.schedule-day__activity-secondary {
+		flex-grow: 1;
 		background: rgb(155, 155, 155);
 		padding-left: 0.5rem;
 		border-bottom: 1px dashed grey;

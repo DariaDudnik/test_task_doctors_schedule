@@ -118,7 +118,9 @@ const DoctorWorkday = ({ doctor, day }) => {
         </div>
 
         <div className="schedule-day__activity-main">
-          <div className="schedule-day__activity-title">{doctor.room}</div>
+          <div className="schedule-day__activity-title">
+            {doctor.medicalFacility} ({doctor.room})
+          </div>
           <div className="schedule-day__activity-body">{doctor.start}-{doctor.end}</div>
         </div>
         <div  className="schedule-day__time">

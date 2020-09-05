@@ -18,6 +18,10 @@
 		.schedule-day__person-name {
 			border-bottom: 1px solid white;
 		}
+		.schedule-day__person-position {
+			font-style: italic;
+			text-transform: lowercase;
+		}
 	}
 	.schedule-day__activity-main {
 		text-align: center;

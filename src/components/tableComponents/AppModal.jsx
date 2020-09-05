@@ -191,7 +191,8 @@ const AppModal = ({ handleClose, show, modalData }) => {
 
   let mainModal;
   if (modalData && !showCancelModal && !showModalSuccess && !showAppModalOpen) {
-    const canCreate = selectedPatient && modalData.appointmentCount < 2;
+    const canCreate = selectedPatient && modalData.appointmentCount < 2 &&
+      (!modalData.fillStatus || selectedPatient.id !== modalData.fillStatus.patient.id);
     const isApppointment = modalData.fillStatus && modalData.fillStatus.appointmentType === "PATIENT";
 
     const modalHeader =

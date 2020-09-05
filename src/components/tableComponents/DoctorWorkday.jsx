@@ -1,5 +1,5 @@
 import React, { memo, useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import Moment from 'react-moment';
 import AppModal from './AppModal';
@@ -15,7 +15,9 @@ const slotCaptions = {
   [appointmentTypes.NOAPP]: 'Врач не принимает',
 }
 
-const AppointmentTime = (props) => {
+const AppointmentTime = memo((props) => {
+  const selectedPatient = useSelector((state) => state.patients.selectedPatient);
+
   const { fillStatus, startMoment } = props;
   const { showModal, rangeString } = props;
 
@@ -26,7 +28,8 @@ const AppointmentTime = (props) => {
     appointmentCount: fillStatus.length,
   });
 
-  const isAvailable = fillStatus.length < 2;
+  const isAvailable = fillStatus.length < 2 &&
+    (!selectedPatient || fillStatus.every(app => app.patient.id !== selectedPatient.id));
 
   if (!fillStatus.length) {
     return (
@@ -60,7 +63,7 @@ const AppointmentTime = (props) => {
       {fillContent}
     </div>
   );
-}
+});
 
 const DoctorWorkday = ({ doctor, day }) => {
   const [modalData, setModalData] = useState(null);

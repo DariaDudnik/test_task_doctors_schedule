@@ -22,6 +22,7 @@ const ShowAppModal = ({ showAppModalOpen, onRequestClose, modalData, style }) =>
       ariaHideApp={false}
     >
       <div style={style.modalContainer}>
+        <i className="large material-icons float-right" role="button" onClick={onRequestClose}>close</i>
         <div style={style.modalHeaderBlockCenter}>
           <div style={style.modalHeaderBlockNext}>
             <i className="large material-icons">assignment</i>

@@ -79,11 +79,12 @@ const doctors = (state = initialState, action) => {
         if (doctorCancelIdx === -1) {
           return;
         }
-        const appToDeleteIdx = draftState.doctorsList[doctorCancelIdx].appointments.findIndex(x => moment(x.date).isSame(action.payload.date));
+
+        const appToDeleteIdx = draftState.doctorsList[doctorCancelIdx].appointments.findIndex(x => x.date.isSame(action.payload.date));
         if (appToDeleteIdx === -1) {
           return;
         }
-          draftState.doctorsList[doctorCancelIdx].appointments.splice(appToDeleteIdx, 1)
+        draftState.doctorsList[doctorCancelIdx].appointments.splice(appToDeleteIdx, 1)
         break;
       default:
         return state;

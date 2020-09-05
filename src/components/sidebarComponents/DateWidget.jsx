@@ -1,5 +1,6 @@
 import React from 'react';
 import DatePicker from "react-datepicker";
+
 import "react-datepicker/dist/react-datepicker.css";
 import { useDispatch, useSelector } from 'react-redux';
 import "react-datepicker/dist/";
@@ -30,16 +31,16 @@ const DateWidget = () => {
   return (
     <div className="left-bar-container__block">
       <div className="left-bar-container__block__top">
-      <h5 className="leftbar-title">Дата записи</h5>
-    </div>
+        <h5 className="leftbar-title">Дата записи</h5>
+      </div>
       <div className="input-group left-bar-container__block__bottom">
         <DatePicker
           dateFormat="dd/MM/yyyy"
+          disabledKeyboardNavigation
           selected={selectedDate}
           onChange={(e) => dispatch(selectDate(e))}
           minDate={new Date()}
           maxDate={addMonths(new Date(), 5)}
-          calendarClassName="rasta-stripes"
           dropdownMode="select"
           placeholderText='ДД.ММ.ГГГГ'
           locale='ru'
@@ -49,15 +50,21 @@ const DateWidget = () => {
           onBlur={() => dispatch(toggleCalendar(false))}
           disabled={!haveCheckedDoctors}
         />
-        <button
-          className="btn btn-secondary search-bar-date-icon"
-          size="sm"
-          onClick={handleToggle}
-        >
-        <FontAwesomeIcon 
-          icon={faCalendarAlt}
-        />
-        </button>
+        <div className="datepicker-tooltip">
+          <button
+            disabled={!haveCheckedDoctors}
+            className="btn btn-secondary search-bar-date-icon"
+            size="sm"
+            onClick={handleToggle}
+          >
+            <FontAwesomeIcon icon={faCalendarAlt} />
+          </button>
+          {!haveCheckedDoctors && (
+            <span className="datepicker-tooltip__text">
+              Выберите доступный ресурс
+            </span>)
+          }
+        </div>
       </div>
     </div>
   );

@@ -20,3 +20,35 @@
 		cursor: pointer;
 	}
 }
+
+.datepicker-tooltip {
+	position: relative;
+	display: inline-block;
+
+	.datepicker-tooltip__text {
+		visibility: hidden;
+		opacity: 0;
+		width: 250px;
+		background-color: #555;
+		color: #fff;
+		text-align: center;
+		border-radius: 6px;
+		padding: 5px 0;
+		transition: opacity 0.3s ease-in-out;
+
+		// position
+		position: absolute;
+		top: -2px;
+		left: 115%;
+		z-index: 1;
+	}
+
+	&:hover .datepicker-tooltip__text {
+		visibility: visible;
+		opacity: 1;
+	}
+}
+
+.left-bar-container__block__bottom .react-datepicker .react-datepicker__day--selected {
+	border-radius: 50%;
+}

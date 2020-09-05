@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import Modal from 'react-modal';
 import { createAppointment } from '../../redux/actions/doctorsActions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -140,20 +140,14 @@ const customStyles = {
 };
 
 const AppModal = ({ handleClose, show, modalData }) => {
-  let data = modalData ? modalData : { 
-    startMoment: null,
-    rangeString: null,
-    fillStatus: null,
-  };
-
   const appointment = {};
   const dispatch = useDispatch();
   const doctor = useSelector((state) => state.doctors.currentDoctor);
   const selectedDate = useSelector((state) => state.doctors.appointmentDate);
   const selectedPatient = useSelector((state) => state.patients.selectedPatient);
   const [showModalSuccess, setShowModalSuccess] = useState(false);
-  const [showModalCancel, setShowModalCancel] = useState(false);
-  const [openShowAppModal, setShowAppModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showAppModalOpen, setShowAppModalOpen] = useState(false);
 
   appointment.doctor = doctor;
   appointment.doctorId = doctor.id;
@@ -167,35 +161,53 @@ const AppModal = ({ handleClose, show, modalData }) => {
     handleSuccess();
   }
 
-  const handleAppCancellation = () => {
-    setShowModalCancel(true);
-    handleClose();
-  }
+  const handleAppCancellation = () => setShowCancelModal(true);
 
   const handleAppShow = () => {
-    setShowAppModal(true);
-  }
+    setShowAppModalOpen(true);
+  };
 
   const handleCloseAppShow = () => {
-    setShowAppModal(false);
+    setShowAppModalOpen(false);
     handleClose();
-  }
+  };
 
   const handleSuccess = () => {
     setShowModalSuccess(true);
-    setTimeout(() => handleSuccessClose, 3000);
-  }
+    handleClose();
+    setTimeout(() => {
+      handleSuccessClose();
+    }, 2000);
+  };
 
   const handleSuccessClose = () => {
     setShowModalSuccess(false);
-  }
+  };
 
-  const isDisabledToCreate = !(selectedPatient && (data.fillStatus && data.fillStatus.length <2));
-  const isDisabledToCancel = !(data.fillStatus && data.fillStatus[0] && data.fillStatus[0].appointmentType === "PATIENT");
+  const closeCancelModal = useCallback(() => {
+    setShowCancelModal(false);
+    handleClose();
+  }, [setShowCancelModal, handleClose]);
 
-  return (
-    <div>
-      <Modal
+  let mainModal;
+  if (modalData && !showCancelModal && !showModalSuccess && !showAppModalOpen) {
+    const canCreate = selectedPatient && modalData.appointmentCount < 2;
+    const isApppointment = modalData.fillStatus && modalData.fillStatus.appointmentType === "PATIENT";
+
+    const modalHeader =
+    isApppointment ? (
+      <React.Fragment>
+        <div style={customStyles.modalHeaderBlockNext}><i className="large material-icons">person_pin</i></div>
+        <span style={customStyles.modalHeaderBlockNextSpan}>{modalData.fillStatus.patient.name}</span>
+      </React.Fragment>
+    ) : (
+      <React.Fragment>
+        <div style={customStyles.modalHeaderBlockNext}><i className="large material-icons">access_time</i></div>
+        <span style={customStyles.modalHeaderBlockNextSpan}>Выбран интервал времени<br />{modalData.rangeString}</span>
+      </React.Fragment>
+    );
+
+    mainModal = (<Modal
         isOpen={show}
         onRequestClose={handleClose}
         style={customStyles}
@@ -205,39 +217,42 @@ const AppModal = ({ handleClose, show, modalData }) => {
       >
         <div className="modal-container">
           <div style={customStyles.modalHeaderBlock}>
-            <div style={customStyles.modalHeaderBlockNext}><i className="large material-icons">access_time</i></div>
-            <span style={customStyles.modalHeaderBlockNextSpan}>Выбран интервал времени<br />{data.rangeString}</span>
+            {modalHeader}
           </div>
-          <div style={customStyles.modalBodyBlock} disabled={isDisabledToCancel}>
+          <div style={customStyles.modalBodyBlock} disabled={!isApppointment}>
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">assignment</i></div>
             <span
-            style={isDisabledToCancel ? customStyles.disabled : {}}
-            onClick={handleAppShow}
+              style={!isApppointment ? customStyles.disabled : {}}
+              onClick={handleAppShow}
             > 
-            Просмотреть запись
+              Просмотреть запись
             </span>
           </div>
-          <div style={customStyles.modalBodyBlock} disabled={isDisabledToCreate}>
+          <div style={customStyles.modalBodyBlock} disabled={!canCreate}>
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">create</i></div>
             <span
-              style={isDisabledToCreate ? customStyles.disabled : customStyles.modalBodyCreateSpan}
+              style={canCreate ? customStyles.modalBodyCreateSpan : customStyles.disabled}
               onClick={handleAppCreation}
               >
                 Создать запись
             </span>
-            </div>
-          <div style={customStyles.modalBodyBlock} disabled={isDisabledToCancel}>
+          </div>
+          <div style={customStyles.modalBodyBlock} disabled={!isApppointment}>
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">delete</i></div>
             <span
-              style={isDisabledToCancel ? customStyles.disabled : customStyles.modalBodyCancelSpan}
+              style={isApppointment ? customStyles.modalBodyCancelSpan : customStyles.disabled}
               onClick={handleAppCancellation}
-              >
-                Отменить запись
-                </span>
-            </div>
+            >
+              Отменить запись
+            </span>
+          </div>
         </div>
-      </Modal>
+      </Modal>);
+  }
 
+  return (
+    <div>
+      {mainModal}
       <SuccessModal
         show={showModalSuccess}
         onRequestClose={handleSuccessClose}
@@ -245,19 +260,19 @@ const AppModal = ({ handleClose, show, modalData }) => {
         ariaHideApp={false}
       />
       <ShowAppModal
-        openShowAppModal={openShowAppModal}
+        showAppModalOpen={showAppModalOpen}
         onRequestClose={handleCloseAppShow}
         style={customStyles}
         modalData={modalData}
       />
       <CancelAppModal
-        showModalCancel={showModalCancel}
-        onRequestClose={handleClose}
-        handleSuccessClose={handleSuccessClose}
+        showCancelModal={showCancelModal}
+        onRequestClose={closeCancelModal}
         style={customStyles}
+        appointment={modalData && modalData.fillStatus}
       />
     </div>
   )
 };
 
-export default AppModal;
+export default React.memo(AppModal);

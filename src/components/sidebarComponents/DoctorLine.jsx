@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 
 
 const DoctorLine = ({ doctor: { id, name, checked, room, type }, handleDoctorSelect, listType }) => (
-  <div onClick={() => handleDoctorSelect(id)}>
+  <label className="d-block">
     <hr className="doctor-list-item" />
     <li className="leftbar-list__category-item">
       <input
@@ -13,10 +13,11 @@ const DoctorLine = ({ doctor: { id, name, checked, room, type }, handleDoctorSel
         form="doctors-check"
         className="doctors-checkbox-name"
         checked={checked}
+        onChange={() => handleDoctorSelect(id)}
       />
-      {listType ? <span>{name}({type}, {room})</span> : <span>{name}</span>}
+      <span>{name}{listType ? `(${type}, ${room})` : ''}</span>
     </li>
-  </div>
+  </label>
 )
 
 export default memo(DoctorLine);

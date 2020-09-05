@@ -15,6 +15,7 @@ const GroupedByTypeList =({ data, name, handleDoctorSelect, handleAllCheckByType
           className="text-left"
         >
           <input
+            readOnly
             type='checkbox'
             className="doctors-checkbox-name"
             checked={allChecked}

@@ -136,9 +136,6 @@
     grid-template-columns: 1fr;
     grid-gap: 2vw;
   }
-  .schedule-table-time-box {
-    width: 200px;
-  }
   input[type=checkbox] {
     &:checked {
       + {
@@ -310,4 +307,23 @@ div[disabled] {
 
 hr.doctor-list-item {
   margin: 0 !important;
+}
+
+.schedule-table-time-box {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+
+  .schedule-table-time-box__appointment {
+    flex-grow: 1;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 0 10px;
+
+    &:hover {
+      background-color: hsl(30, 70, 70);
+    }
+  }
 }

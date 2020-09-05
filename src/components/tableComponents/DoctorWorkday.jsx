@@ -1,4 +1,4 @@
-import React, { useCallback, memo, useState } from 'react';
+import React, { memo, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import moment from 'moment';
 import Moment from 'react-moment';
@@ -17,19 +17,37 @@ const slotCaptions = {
 
 const AppointmentTime = (props) => {
   const { fillStatus, startMoment } = props;
-  const handleClick = useCallback(() => props.showModal(props), [props]);
+  const { showModal, rangeString } = props;
+
+  const handleClick = (appointment) => () => showModal({
+    startMoment,
+    rangeString,
+    fillStatus: appointment,
+    appointmentCount: fillStatus.length,
+  });
 
   const isAvailable = fillStatus.length < 2;
 
-  if(!fillStatus.length) {
-    return <div className={`schedule-day__time ${isAvailable ? 'schedule-day__time_available' : ''}`} onClick={handleClick}>{startMoment.format("HH:mm")}</div>
+  if (!fillStatus.length) {
+    return (
+      <div className={`schedule-day__time ${isAvailable ? 'schedule-day__time_available' : ''}`} onClick={handleClick(null)}>
+        {startMoment.format("HH:mm")}
+      </div>
+    );
   }
 
   const fillContent = fillStatus.map((slot, index) => {
     if(slot.appointmentType === appointmentTypes.PATIENT) {
       const shortName = slot.patient.name.split(/\s+/).map((w,i) => i ? w.substring(0,1).toUpperCase() + '.' : w).join(' ');
       const shortDate = moment(slot.date).format("HH:mm")
-      return (<div className={`schedule-day__time ${isAvailable ? 'schedule-day__time_available' : ''}`} key={index} onClick={handleClick}>{shortDate} {shortName}</div>)
+      return (
+        <div
+          key={index}
+          className={`schedule-day__time schedule-table-time-box__appointment  ${isAvailable ? 'schedule-day__time_available' : ''}`}
+          onClick={handleClick(slot)}
+        >
+          {shortDate} {shortName}
+        </div>);
     }
 
     return (<div key={index} className="schedule-day__activity-secondary">
@@ -38,7 +56,7 @@ const AppointmentTime = (props) => {
   });
 
   return (
-    <div className={`schedule-table-time-box`}>
+    <div className="schedule-table-time-box">
       {fillContent}
     </div>
   );
@@ -64,7 +82,6 @@ const DoctorWorkday = ({ doctor, day }) => {
     const next = cur + doctor.interval;
     const nextHours = Math.floor(next / 60);
     const nextMins = next % 60;
-    console.log('next was', next, 'so nextHours', nextHours, 'nextMins', nextMins);
     const nextMinsString = ('0'+nextMins).substr(-2);
 
     const periodStartMoment = moment(day);
@@ -72,10 +89,11 @@ const DoctorWorkday = ({ doctor, day }) => {
     periodStartMoment.set('minute', curMins);
 
     const fillStatus =  doctor.appointments.filter(app => { 
-      if(app.date){
+      if(app.appointmentType === appointmentTypes.PATIENT && app.date){
         return moment(app.date).isSame(periodStartMoment);
       }
-      if(app.appointmentType === "STUDY" || app.appointmentType === "PAPERWORK") {
+
+      if(app.appointmentType === appointmentTypes.STUDY || app.appointmentType === appointmentTypes.PAPERWORK) {
         const timeFrom = moment(day).isoWeekday(app.dayFrom);
         const timeTo = moment(day).isoWeekday(app.dayTo);
         const isCurDay = moment(day).isBetween(timeFrom, timeTo, undefined, '[]');
@@ -100,13 +118,14 @@ const DoctorWorkday = ({ doctor, day }) => {
   }
 
   const showModal = modalData => {
+    console.log('ShowModal in Doctor workday')
     dispatch(setCurrentDoctor(doctor, modalData.startMoment));
     setModalData(modalData);
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setModalData(null);
-  };
+  }, [setModalData]);
 
   return (
     <div >

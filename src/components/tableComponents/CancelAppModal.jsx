@@ -3,23 +3,19 @@ import { cancelAppointment } from '../../redux/actions/doctorsActions';
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 
-const CancelAppModal = ({ showModalCancel, onRequestClose, handleSuccessClose, style }) => {
-  const appointment = {};
+const CancelAppModal = ({ showCancelModal, onRequestClose, style, appointment }) => {
   const dispatch = useDispatch();
-  const doctor = useSelector((state) => state.doctors.currentDoctor);
-  const selectedDate = useSelector((state) => state.doctors.appointmentDate);
 
-  appointment.doctorId = doctor.id;
-  appointment.date = selectedDate;
+  console.log('appointment is', appointment);
 
   const confirmCancellation = () => {
-      dispatch(cancelAppointment(appointment));
-      handleSuccessClose();
+    dispatch(cancelAppointment(appointment));
+    onRequestClose();
   }
 
   return (
     <Modal
-      isOpen={showModalCancel}
+      isOpen={showCancelModal}
       style={style}
       onRequestClose={onRequestClose}
       contentLabel="appointmentCancel"
@@ -39,10 +35,10 @@ const CancelAppModal = ({ showModalCancel, onRequestClose, handleSuccessClose, s
         >
           Отменить
         </button>
-        <div style={style.declineModalBackLink} onClick={handleSuccessClose}>Вернуться к расписанию</div>
+        <div style={style.declineModalBackLink} onClick={onRequestClose}>Вернуться к расписанию</div>
       </div>
     
     </Modal>
   )
 };
-export default CancelAppModal;
+export default React.memo(CancelAppModal);

@@ -3,25 +3,19 @@ import { useSelector } from 'react-redux';
 import Modal from 'react-modal';
 import moment from 'moment';
 
-const ShowAppModal = ({ openShowAppModal, onRequestClose, modalData, style }) => {
-  let data = modalData ? modalData : { 
-    startMoment: null,
-    rangeString: null,
-    fillStatus: [],
-  };
-
-  let patientInfo = data.fillStatus[0] ? data.fillStatus[0] : {
-    patient: {
-      name: null,
-    },
-    date: moment(),
-  };
+const ShowAppModal = ({ showAppModalOpen, onRequestClose, modalData, style }) => {
   const currentDoctor = useSelector(state => state.doctors.currentDoctor);
+
+  if (!modalData || !modalData.fillStatus) {
+    return null;
+  }
+
+  const patientInfo = modalData.fillStatus;
   const roomNumber = currentDoctor.room ? currentDoctor.room.slice(2) : '';
 
   return (
     <Modal
-      isOpen={openShowAppModal}
+      isOpen={showAppModalOpen}
       style={style}
       onRequestClose={onRequestClose}
       contentLabel="appointmentCancel"

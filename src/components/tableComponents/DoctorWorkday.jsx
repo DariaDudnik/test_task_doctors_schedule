@@ -29,7 +29,7 @@ const AppointmentTime = memo((props) => {
   });
 
   const isAvailable = fillStatus.length < 2 &&
-    (!selectedPatient || fillStatus.every(app => app.patient.id !== selectedPatient.id));
+    (!selectedPatient || fillStatus.every(app => !app.patient || app.patient.id !== selectedPatient.id));
 
   if (!fillStatus.length) {
     return (
@@ -39,18 +39,25 @@ const AppointmentTime = memo((props) => {
     );
   }
 
+  let dateAdded; // scary side-effects involved
   const fillContent = fillStatus.map((slot, index) => {
     if(slot.appointmentType === appointmentTypes.PATIENT) {
       const shortName = slot.patient.name.split(/\s+/).map((w,i) => i ? w.substring(0,1).toUpperCase() + '.' : w).join(' ');
       const shortDate = moment(slot.date).format("HH:mm")
-      return (
-        <div
-          key={index}
-          className={`schedule-day__time schedule-table-time-box__appointment  ${isAvailable ? 'schedule-day__time_available' : ''}`}
-          onClick={handleClick(slot)}
-        >
-          {shortDate} {shortName}
-        </div>);
+
+      const result = (
+        <React.Fragment key={index}>
+          {!dateAdded && (<div className="schedule-day__time">{shortDate}</div>)}
+          <div
+            className={`schedule-day__time schedule-table-time-box__appointment  ${isAvailable ? 'schedule-day__time_available' : ''}`}
+            onClick={handleClick(slot)}
+          >
+            {shortName}
+          </div>
+        </React.Fragment>
+      );
+      dateAdded = true;
+      return result;
     }
 
     return (<div key={index} className="schedule-day__activity-secondary">

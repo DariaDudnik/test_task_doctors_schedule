@@ -37,6 +37,7 @@
 		}
 	}
 	.schedule-day__time {
+		padding: 0 5px;
 		background: var(--secondary-color);
 		cursor: default;
 
@@ -45,7 +46,7 @@
 	 	}
 
 		.schedule-day__time_available {
-      cursor: pointer;
+			cursor: pointer;
 		}
 
 		.schedule-day__time_available:hover{

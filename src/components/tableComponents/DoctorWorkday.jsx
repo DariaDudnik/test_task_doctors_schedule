@@ -118,7 +118,6 @@ const DoctorWorkday = ({ doctor, day }) => {
   }
 
   const showModal = modalData => {
-    console.log('ShowModal in Doctor workday')
     dispatch(setCurrentDoctor(doctor, modalData.startMoment));
     setModalData(modalData);
   };

@@ -80,7 +80,7 @@ const SearchWidget = () => {
           <div className="left-bar-container__block__bottom">
             <div className="custom-input-container">
               <input
-                type="text"
+                type="search"
                 placeholder="Введите текст для поиска"
                 aria-label="текст для поиска"
                 aria-describedby="basic-addon2"

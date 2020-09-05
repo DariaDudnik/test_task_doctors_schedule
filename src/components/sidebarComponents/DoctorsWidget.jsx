@@ -108,7 +108,7 @@ const DoctorsWidget = () => {
       <div className="left-bar-container__block__bottom">
         <div className="custom-input-container">
           <input
-            type="text"
+            type="search"
             placeholder="Введите текст для поиска"
             onChange={handleSearch}
             value={searchTerm}

@@ -10,8 +10,6 @@ import {
   CANCEL_APPOINTMENT,
 } from '../constants/constants';
 import produce from "immer";
-import moment from 'moment';
-
 
 const initialState = {
   doctorsList: [],

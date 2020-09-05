@@ -1,12 +1,10 @@
 import React from 'react';
 import { cancelAppointment } from '../../redux/actions/doctorsActions';
 import Modal from 'react-modal';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const CancelAppModal = ({ showCancelModal, onRequestClose, style, appointment }) => {
   const dispatch = useDispatch();
-
-  console.log('appointment is', appointment);
 
   const confirmCancellation = () => {
     dispatch(cancelAppointment(appointment));

@@ -13,7 +13,6 @@ todayStart.setSeconds(0);
 
 const initialState = {
   currentDate: todayStart,
-  datePickerIsOpen: false,
   timeRangeFrom: moment(),
   timeRangeTo: moment(),
   dayFilterInterval: 0,
@@ -24,15 +23,11 @@ const schedule = (state = initialState, action) => {
     switch (action.type) {
       case SELECT_DATE:
         draftState.currentDate = action.payload;
-        draftState.datePickerIsOpen = false;
         const filter = moment(draftState.currentDate).add(draftState.dayFilterInterval, 'day')
         if(draftState.currentDate !== null) {
           draftState.timeRangeFrom = draftState.currentDate;
         }
         draftState.timeRangeTo = filter;
-        break;
-      case TOGGLE_CALENDAR:
-        draftState.datePickerIsOpen = action.payload;
         break;
       case SET_TIME_FILTER:
         const timeRangeFrom = moment(draftState.currentDate);

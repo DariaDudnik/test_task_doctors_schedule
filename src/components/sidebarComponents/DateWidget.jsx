@@ -11,7 +11,7 @@ import ru from 'date-fns/locale/ru';
 import addMonths from 'date-fns/addMonths'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarAlt, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
-import { selectDate, toggleCalendar } from '../../redux/actions/scheduleActions';
+import { selectDate } from '../../redux/actions/scheduleActions';
 
 const moment = extendMoment(momentBase);
 registerLocale('ru', ru);
@@ -19,11 +19,11 @@ registerLocale('ru', ru);
 const DateWidget = () => {
   const storeDate = useSelector(state => state.schedule.currentDate);
   const checkedDoctors = useSelector(state => state.doctors.doctorsList.filter(doc => doc.checked));
-  const datePickerIsOpen = useSelector(state => state.schedule.datePickerIsOpen);
   const haveCheckedDoctors = useSelector(state => state.doctors.doctorsList.some(doc => doc.checked));
   const dispatch = useDispatch();
 
   const [ selectedDate, setSelectedDate ] = useState(storeDate);
+  const [ datepickerOpen, setDatepickerOpen ] = useState(false);
 
   useEffect(() => {
     setSelectedDate(storeDate);
@@ -47,24 +47,21 @@ const DateWidget = () => {
     if (!haveCheckedDoctors) {
       return;
     }
-
-    dispatch(toggleCalendar(!datePickerIsOpen));
+    setDatepickerOpen(state => !state);
   }
 
-  const highlightWithRanges = [
-    {
-      'react-datepicker__day--highlight-appointments': highlightedDays,
-    },
-  ];
+  const highlightWithRanges = [{
+    'react-datepicker__day--highlight-appointments': highlightedDays,
+  }];
 
   const handleOk = () => {
     dispatch(selectDate(selectedDate));
-    dispatch(toggleCalendar(false));
+    setDatepickerOpen(false);
   }
 
   const handleCancel = () => {
     setSelectedDate(storeDate);
-    dispatch(toggleCalendar(false));
+    setDatepickerOpen(false);
   }
 
   return (
@@ -85,8 +82,7 @@ const DateWidget = () => {
           locale='ru'
           showDisabledMonthNavigation
           className="search-bar-date-calendar"
-          open={datePickerIsOpen}
-          onBlur={handleCancel}
+          open={datepickerOpen}
           disabled={!haveCheckedDoctors}
           highlightDates={highlightWithRanges}
         >

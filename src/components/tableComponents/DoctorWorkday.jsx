@@ -48,12 +48,14 @@ const AppointmentTime = memo((props) => {
         </div>
       );
     } else {
+      const nameWitdh = { width: `calc((100% - 46px)/${fillStatus.length})`};
       const patients = fillStatus.map(({ patient }) => {
         const text = patient.name.split(/\s+/)
           .map((word, idx) => idx === 0 ? `${word} ` : `${word[0]}.`)
           .join('');
         return (<div
           key={`${patient.id}`}
+          style={nameWitdh}
           className={`appointment-tooltip schedule-day__time-row schedule-table-time-box__appointment  ${isAvailable ? 'schedule-day__time-row_available' : ''}`}
           onClick={handleClick(patient)}
         >

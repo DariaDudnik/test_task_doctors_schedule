@@ -26,19 +26,25 @@ const AppointmentTime = memo((props) => {
     appointmentCount: fillStatus.length,
   });
 
-  const isAvailable = fillStatus.length < 2 &&
+  let tooltipMessage = 'Время доступно для записи';
+  let isAvailable = fillStatus.length < 2 &&
     (!selectedPatient || fillStatus.every(app => !app.patient || app.patient.id !== selectedPatient.id));
+
+  if (isAvailable && startMoment < moment().add(30, 'minutes')) {
+    isAvailable = false;
+    tooltipMessage = 'Запись на прошедший временной интервал недоступна';
+  }
 
   let content;
   if (fillType === appointmentTypes.PATIENT) {
     if (!fillStatus.length) {
       content = (
         <div
-          className={`schedule-day__time-row schedule-table-time-box__appointment ${isAvailable ? 'schedule-day__time-row_available' : ''}`}
+          className={`appointment-tooltip schedule-day__time-row schedule-table-time-box__appointment ${isAvailable ? 'schedule-day__time-row_available' : ''}`}
           onClick={handleClick(null)}
-          title={isAvailable && 'Время доступно для записи'}
         >
           {startMoment.format("HH:mm")}
+          <span className="appointment-tooltip__text">{tooltipMessage}</span>
         </div>
       );
     } else {
@@ -48,11 +54,11 @@ const AppointmentTime = memo((props) => {
           .join('');
         return (<div
           key={`${patient.id}`}
-          className={`schedule-day__time-row schedule-table-time-box__appointment  ${isAvailable ? 'schedule-day__time-row_available' : ''}`}
+          className={`appointment-tooltip schedule-day__time-row schedule-table-time-box__appointment  ${isAvailable ? 'schedule-day__time-row_available' : ''}`}
           onClick={handleClick(patient)}
-          title={`${rangeString} ${patient.name}`}
         >
-          {text}
+          <div className="patient-name">{text}</div>
+          <span className="appointment-tooltip__text">{`${rangeString} ${patient.name}`}</span>
         </div>)
       })
       content = (<React.Fragment>

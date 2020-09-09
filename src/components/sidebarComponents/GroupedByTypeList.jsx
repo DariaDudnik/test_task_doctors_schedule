@@ -5,8 +5,6 @@ const GroupedByTypeList =({ doctors, name, handleDoctorSelect, handleAllCheckByT
   const allChecked = useMemo(() => doctors.every(item => item.checked), [doctors]);
   const childrenIds = useMemo(() => doctors.map(item => item.contract.id), [doctors]);
 
-  console.log('childrenIds', childrenIds);
-
   return (
     <div className="leftbar-list__category-label">
       <div

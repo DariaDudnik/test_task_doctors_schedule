@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 
 
 const DoctorLine = ({ doctor: { name, checked, type, contract }, handleDoctorSelect, listType }) => (
-  <label className="d-block">
+  <label className="d-block mb-0">
     <hr className="doctor-list-item" />
     <li className="leftbar-list__category-item">
       <input

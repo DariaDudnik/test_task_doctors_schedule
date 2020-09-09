@@ -1,5 +1,4 @@
 import { quotasTypes } from './constants';
-import doctors from '../stub-data/doctors-data';
 import moment from 'moment';
 
 class DocFacade {
@@ -159,104 +158,6 @@ class DocFacade {
     });
 
     return DocFacade.splitAppointments(borders, intervalWithQuotas);
-  }
-
-  static layeredIntervals(borders, quotas, scheduleSlots) {
-    const { start, end, interval } = borders;
-
-    let time = moment(start);
-    const scheduleIntervals = []
-    while (time <= end) {
-      const intervalEnd = moment(time).add(interval, 'minutes');
-
-      scheduleIntervals.push({
-        time: time.format('HH:mm'),
-        rangeString: `${time.format('HH:mm')}-${intervalEnd.format('HH:mm')}`,
-        startMoment: time,
-        endMoment: moment(intervalEnd), // copy just in case
-        fillType: null, // it is not PATIENT now. It will become PATIENT after.
-        fillStatus: [],
-        hasAppointmentSlots: false,
-      });
-
-      time = intervalEnd;
-    }
-
-    const [ patientQuota ] = quotas.filter(q => q.fillType === quotasTypes.PATIENT);
-    let patientedIntevals = scheduleIntervals;
-    if (patientQuota) {
-      patientedIntevals = scheduleIntervals.map(interval => {
-        if (interval.start < patientQuota.startMoment) {
-          return interval;
-        } else if (interval.end > patientQuota.endMoment) {
-          return interval;
-        } else {
-          return { ...interval, hasAppointmentSlots: true };
-        }
-      });
-    }
-
-    const otherQuotas = quotas.filter(q => q.fillType !== quotasTypes.PATIENT);
-    const intervalsWithQuotas = otherQuotas.reduce((intervals, quota) => {
-      const resultingArray = intervals.slice();
-
-      let indexFrom;
-      let foundFromIndex = false;
-      let indexTo = 0;
-      let foundToIndex = false;
-
-      intervals.forEach((slot, index) => {
-        if (!foundFromIndex && slot.endMoment > quota.startMoment) {
-          indexFrom = index;
-          foundFromIndex = true
-        }
-
-        if (!foundToIndex && slot.startMoment < quota.endMoment) {
-          indexTo = index;
-        }
-      });
-
-      resultingArray.splice(indexFrom, indexTo - indexFrom + 1, quota);
-      return resultingArray;
-    }, patientedIntevals);
-
-    const collapsedNonAppointments = intervalsWithQuotas.reduce((state, interval) => {
-      const isAlive = interval.hasAppointmentSlots  || interval.fillType !== quotasTypes.PATIENT;
-
-      if (isAlive) {
-        let toAdd = [interval]
-        if (state.lastSeenNOAPP) {
-          toAdd = [state.lastSeenNOAPP].concat(toAdd);
-        }
-
-        return {
-          lastSeenNOAPP: null,
-          result: toAdd,
-        };
-      }
-
-      if (state.lastSeenNOAPP) {
-        return {
-          result: state.result,
-          lastSeenNOAPP: {
-            ...state.lastSeenNOAPP,
-            endMoment: interval.endMoment,
-          },
-        };
-      }
-
-      return {
-        result: state.result,
-        lastSeenNOAPP: interval,
-      }
-    }, {
-      result: [],
-      lastSeenNOAPP: null,
-    });
-
-    // TODO: inject placehodlers where
-
-    return collapsedNonAppointments;
   }
 
   static makeDaySchedule(doctor, date) {

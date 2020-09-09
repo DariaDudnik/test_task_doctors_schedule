@@ -316,10 +316,14 @@ hr.doctor-list-item {
 
   .schedule-table-time-box__appointment {
     flex-grow: 2;
+    flex-shrink: 2;
     text-align: center;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+
+    .patient-name {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
 
     &:hover {
       background-color: hsl(30, 70, 70);

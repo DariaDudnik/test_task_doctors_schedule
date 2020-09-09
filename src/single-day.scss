@@ -37,19 +37,22 @@
 		}
 	}
 	.schedule-day__time {
-		padding: 0 5px;
 		background: var(--secondary-color);
 		cursor: default;
+	}
 
-		> div{
-			border-bottom: 1px dashed grey;
-	 	}
+	.schedule-table-time-box {
+		border-bottom: 1px dashed grey;
 
-		.schedule-day__time_available {
+		.schedule-day__time-row {
+			padding: 0 3px;
+		}
+
+		.schedule-day__time-row_available {
 			cursor: pointer;
 		}
 
-		.schedule-day__time_available:hover{
+		.schedule-day__time-row_available:hover {
 			background-color: lightblue;
 		}
 	}
@@ -59,7 +62,6 @@
 		background: rgb(155, 155, 155);
 		padding-left: 0.5rem;
 		border-bottom: 1px dashed grey;
-		padding-bottom: 1.5rem;
 	}
 }
 .main-container__schedule-day__alert {

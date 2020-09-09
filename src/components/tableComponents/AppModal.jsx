@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import SuccessModal  from './SuccessModal';
 import ShowAppModal  from './ShowAppModal';
 import CancelAppModal from './CancelAppModal';
-import { appointmentTypes } from '../../redux/constants/constants';
 
 const customStyles = {
   content : {
@@ -140,7 +139,6 @@ const customStyles = {
 };
 
 const AppModal = ({ handleClose, show, modalData }) => {
-  const appointment = {};
   const dispatch = useDispatch();
   const doctor = useSelector((state) => state.doctors.currentDoctor);
   const selectedDate = useSelector((state) => state.doctors.appointmentDate);
@@ -149,14 +147,12 @@ const AppModal = ({ handleClose, show, modalData }) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [showAppModalOpen, setShowAppModalOpen] = useState(false);
 
-  appointment.doctor = doctor;
-  appointment.doctorId = doctor.id;
-  appointment.date = selectedDate;
-  appointment.patient = selectedPatient;
-  appointment.appointmentType = appointmentTypes.PATIENT;
-
   const handleAppCreation = () => {
-    dispatch(createAppointment(appointment));
+    dispatch(createAppointment({
+      doctor,
+      date: selectedDate,
+      patient: selectedPatient
+    }));
     handleClose();
     handleSuccess();
   }
@@ -191,15 +187,16 @@ const AppModal = ({ handleClose, show, modalData }) => {
 
   let mainModal;
   if (modalData && !showCancelModal && !showModalSuccess && !showAppModalOpen) {
+    const isApppointment = !!modalData.patient;
+
     const canCreate = selectedPatient && modalData.appointmentCount < 2 &&
-      (!modalData.fillStatus || selectedPatient.id !== modalData.fillStatus.patient.id);
-    const isApppointment = modalData.fillStatus && modalData.fillStatus.appointmentType === "PATIENT";
+      (!isApppointment || selectedPatient.id !== modalData.patient.id);
 
     const modalHeader =
     isApppointment ? (
       <React.Fragment>
         <div style={customStyles.modalHeaderBlockNext}><i className="large material-icons">person_pin</i></div>
-        <span style={customStyles.modalHeaderBlockNextSpan}>{modalData.fillStatus.patient.name}</span>
+        <span style={customStyles.modalHeaderBlockNextSpan}>{modalData.patient.name}</span>
       </React.Fragment>
     ) : (
       <React.Fragment>
@@ -220,16 +217,16 @@ const AppModal = ({ handleClose, show, modalData }) => {
           <div style={customStyles.modalHeaderBlock}>
             {modalHeader}
           </div>
-          <div style={customStyles.modalBodyBlock} disabled={!isApppointment}>
+          <div style={customStyles.modalBodyBlock}>
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">assignment</i></div>
             <span
               style={!isApppointment ? customStyles.disabled : {}}
               onClick={handleAppShow}
-            > 
+            >
               Просмотреть запись
             </span>
           </div>
-          <div style={customStyles.modalBodyBlock} disabled={!canCreate}>
+          <div style={customStyles.modalBodyBlock}>
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">create</i></div>
             <span
               style={canCreate ? customStyles.modalBodyCreateSpan : customStyles.disabled}
@@ -238,7 +235,7 @@ const AppModal = ({ handleClose, show, modalData }) => {
                 Создать запись
             </span>
           </div>
-          <div style={customStyles.modalBodyBlock} disabled={!isApppointment}>
+          <div style={customStyles.modalBodyBlock}>
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">delete</i></div>
             <span
               style={isApppointment ? customStyles.modalBodyCancelSpan : customStyles.disabled}
@@ -270,7 +267,7 @@ const AppModal = ({ handleClose, show, modalData }) => {
         showCancelModal={showCancelModal}
         onRequestClose={closeCancelModal}
         style={customStyles}
-        appointment={modalData && modalData.fillStatus}
+        patient={modalData && modalData.patient}
       />
     </div>
   )

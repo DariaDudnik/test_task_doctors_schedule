@@ -16,20 +16,20 @@ const DoctorsList = ({ groupedByType, doctors, handleDoctorSelect, handleAllChec
     }, {});
   }, [doctors]);
 
-  if (!doctors || !doctors.length) {
+  if (!doctors.length) {
     return null;
   }
 
   if (groupedByType) {
     return (
-      <ul className="leftbar-list__category"> 
-        { 
+      <ul className="leftbar-list__category">
+        {
           Object.entries(groupedDoctorsByType).map(([key, value]) => {
             return (
               <GroupedByTypeList
                 key={key}
                 name={key}
-                data={value}
+                doctors={value}
                 handleDoctorSelect={handleDoctorSelect}
                 handleAllCheckByType={handleAllCheckByType}
               />
@@ -41,15 +41,17 @@ const DoctorsList = ({ groupedByType, doctors, handleDoctorSelect, handleAllChec
   }
 
   const sortedDoctors = sortBy(doctors, ['name']);
-
   return (
     <form>
       <div>
-        <div key='as' multiple="multiple" name="doctor[]">
-          {sortedDoctors.map(doctor => (
-            <DoctorLine key={doctor.id} doctor={doctor} handleDoctorSelect={handleDoctorSelect} listType={'alphabet'}/>
-          ))}
-        </div>
+        {sortedDoctors.map(doctor => (
+          <DoctorLine
+            key={doctor.contract.id}
+            doctor={doctor}
+            handleDoctorSelect={handleDoctorSelect}
+            listType={'alphabet'}
+          />
+        ))}
       </div>
     </form>
   );

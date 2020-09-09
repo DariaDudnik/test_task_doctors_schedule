@@ -1,32 +1,29 @@
 import React, { useMemo, memo } from 'react';
 import { useSelector } from 'react-redux';
 import DoctorWorkday from './DoctorWorkday';
-import moment from 'moment';
+import DocFacade from "../../utils/DocFacade";
 
 const WeekdayGroup = ({ day }) => {
   const doctors = useSelector(state => state.doctors.doctorsList);
 
-  const workingDoctors = useMemo(() => {
-    if (!doctors) {
-      return [];
-    }
-
-    const checkedDoctors = doctors.filter(d => d.checked);
-    const selectedDoctors = checkedDoctors.length ? checkedDoctors : doctors;
-
-    return selectedDoctors.filter((doctor) => {
-      const workWeekFrom = moment(day).isoWeekday(doctor.workWeekStart);
-      const workWeekEnd = moment(day).isoWeekday(doctor.workWeekEnd);
-
-      const isWorkingDay = moment(day).isBetween(workWeekFrom, workWeekEnd, undefined, '[]');
-
-      return isWorkingDay;
-    })
+  const docSchedules = useMemo(() => {
+    return doctors
+      .filter(doc => doc.checked)
+      .map(doc => ({
+        doctor: doc,
+        schedule: DocFacade.makeDaySchedule(doc, day),
+      }))
+      .filter(({ schedule }) => !!schedule && schedule.hasAppointmentSlots);
   }, [day, doctors]);
 
   return <div className="main-container__schedule">
-    {workingDoctors.map(doctor => (
-      <DoctorWorkday doctor={doctor} day={day} key={doctor.id} />
+    {docSchedules.map(({ doctor, schedule }) => (
+      <DoctorWorkday
+        key={doctor.contract.id}
+        doctor={doctor}
+        schedule={schedule}
+        day={day}
+      />
     ))}
   </div>
 }

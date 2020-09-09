@@ -20,8 +20,8 @@ export const requestDoctorsListSuccess = (list) => ({
   type: REQUEST_DOCTORS_LIST_SUCCESS,
 });
 
-export const toggleDoctor = (id) => ({
-  payload: id,
+export const toggleDoctor = (contractId) => ({
+  payload: contractId,
   type: TOGGLE_DOCTOR,
 });
 

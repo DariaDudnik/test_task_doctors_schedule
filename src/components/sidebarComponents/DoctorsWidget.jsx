@@ -11,7 +11,7 @@ const DoctorsWidget = () => {
   const list = useSelector(state => state.doctors.doctorsList);
   const dispatch = useDispatch();
   const [groupedByType, setGroupedByType] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');  
+  const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [allChecked, setAllChecked] = useState(false);
 
@@ -26,8 +26,8 @@ const DoctorsWidget = () => {
     setAllChecked(isAllChecked);
   }, [list])
 
-  const handleDoctorSelect = (id) => {
-    dispatch(toggleDoctor(id));
+  const handleDoctorSelect = (contractId) => {
+    dispatch(toggleDoctor(contractId));
     setSearchTerm('');
   };
 
@@ -43,7 +43,7 @@ const DoctorsWidget = () => {
   }
 
   const handleSearch = event => {
-    const text = event.target.value;
+    const text = event.target.value.toLowerCase();
 
     const results = list.filter(({ name, type }) =>
       name.toLowerCase().indexOf(text) === 0 ||
@@ -61,8 +61,9 @@ const DoctorsWidget = () => {
   } else {
     searchItems = searchResults.map(doctor => (
       <Dropdown.Item
+        key={String(doctor.id)}
         eventKey="1"
-        onClick={() => handleDoctorSelect(doctor.id)}
+        onClick={() => handleDoctorSelect(doctor.contract.id)}
         id={doctor.id}
       >
         {doctor.name}({doctor.type})
@@ -76,7 +77,7 @@ const DoctorsWidget = () => {
           <h5 className="mr-1 leftbar-title">Специалисты</h5>
           <span>{numberOfCheckedDoctors}/{list.length}</span>
           <div className="dropdown patient-dropdown">
-            <button 
+            <button
               className="btn btn-secondary dropdown-toggle patient-button"
               type="button"
               id="dropdownMenuButton"

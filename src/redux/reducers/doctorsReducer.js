@@ -10,6 +10,7 @@ import {
   CANCEL_APPOINTMENT,
 } from '../constants/constants';
 import produce from "immer";
+import moment from "moment";
 
 const initialState = {
   doctorsList: [],
@@ -26,9 +27,8 @@ const doctors = (state = initialState, action) => {
         draftState.isLoading = true;
         break;
       case REQUEST_DOCTORS_LIST_SUCCESS:
-        action.payload.forEach(item => {
-          item.checked = false;
-          item.appointments = item.appointments || [];
+        action.payload.forEach(doctor => {
+          doctor.checked = false;
         });
         draftState.doctorsList = action.payload;
         draftState.isLoading = false;
@@ -40,7 +40,7 @@ const doctors = (state = initialState, action) => {
       case TOGGLE_DOCTORS_BY_TYPE:
         const { ids, newVal } = action.payload;
         ids.forEach(item => {
-          const doctorIdx = draftState.doctorsList.findIndex(el =>  el.id === item);
+          const doctorIdx = draftState.doctorsList.findIndex(doctor =>  doctor.contract.id === item);
           if (doctorIdx !== -1) {
             draftState.doctorsList[doctorIdx].checked = newVal;
           }
@@ -53,36 +53,43 @@ const doctors = (state = initialState, action) => {
         }
         break;
       case TOGGLE_DOCTOR:
-        draftState.doctorsList.forEach(item => {
-          if(item.id === action.payload) {
-            item.checked = !item.checked;
+        draftState.doctorsList.forEach(doctor => {
+          if(doctor.contract.id === action.payload) {
+            doctor.checked = !doctor.checked;
           }
-
-          return item;
         });
         break;
       case TOGGLE_ALL_DOCTORS:
         draftState.doctorsList.forEach(d => d.checked = action.payload);
         break;
       case CREATE_APPOINTMENT:
-        const doctorIdx = draftState.doctorsList.findIndex(doc => doc.id === action.payload.doctorId);
+        const doctorIdx = draftState.doctorsList.findIndex(doc => doc.id === action.payload.doctor.id);
         if (doctorIdx === -1) {
           return;
         }
 
-        draftState.doctorsList[doctorIdx].appointments.push(action.payload);
+        draftState.doctorsList[doctorIdx].contract.appointments.push(action.payload);
         break;
       case CANCEL_APPOINTMENT:
-        const doctorCancelIdx = draftState.doctorsList.findIndex(doc => doc.id === action.payload.doctorId);
+        const doctors = draftState.doctorsList;
+        const doctorCancelIdx = doctors.findIndex(doc => doc.id === action.payload.doctor.id);
         if (doctorCancelIdx === -1) {
           return;
         }
+        const doctor = doctors[doctorCancelIdx];
 
-        const appToDeleteIdx = draftState.doctorsList[doctorCancelIdx].appointments.findIndex(x => x.date.isSame(action.payload.date));
+        const appToDeleteIdx = doctor.contract.appointments
+          .findIndex(app => {
+            const sameTime = moment(app.date).isSame(action.payload.date);
+            const samePatient = app.patient.id === action.payload.patient.id;
+            return sameTime && samePatient;
+          });
+
         if (appToDeleteIdx === -1) {
           return;
         }
-        draftState.doctorsList[doctorCancelIdx].appointments.splice(appToDeleteIdx, 1)
+
+        draftState.doctorsList[doctorCancelIdx].contract.appointments.splice(appToDeleteIdx, 1)
         break;
       default:
         return state;

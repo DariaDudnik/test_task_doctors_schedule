@@ -315,12 +315,11 @@ hr.doctor-list-item {
   flex-wrap: nowrap;
 
   .schedule-table-time-box__appointment {
-    flex-grow: 1;
+    flex-grow: 2;
     text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
-    padding: 0 5px;
 
     &:hover {
       background-color: hsl(30, 70, 70);

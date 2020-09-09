@@ -1,13 +1,19 @@
 import React from 'react';
 import { cancelAppointment } from '../../redux/actions/doctorsActions';
 import Modal from 'react-modal';
-import { useDispatch } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-const CancelAppModal = ({ showCancelModal, onRequestClose, style, appointment }) => {
+const CancelAppModal = ({ showCancelModal, onRequestClose, style, patient }) => {
   const dispatch = useDispatch();
+  const doctor = useSelector((state) => state.doctors.currentDoctor);
+  const selectedDate = useSelector((state) => state.doctors.appointmentDate);
 
   const confirmCancellation = () => {
-    dispatch(cancelAppointment(appointment));
+    dispatch(cancelAppointment({
+      doctor,
+      patient: patient,
+      date: selectedDate,
+    }));
     onRequestClose();
   }
 
@@ -35,7 +41,6 @@ const CancelAppModal = ({ showCancelModal, onRequestClose, style, appointment })
         </button>
         <div style={style.declineModalBackLink} onClick={onRequestClose}>Вернуться к расписанию</div>
       </div>
-    
     </Modal>
   )
 };

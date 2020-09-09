@@ -1,37 +1,33 @@
 import React, { memo, useMemo } from "react";
 import DoctorLine from "./DoctorLine";
 
-const GroupedByTypeList =({ data, name, handleDoctorSelect, handleAllCheckByType }) => {
- 
+const GroupedByTypeList =({ doctors, name, handleDoctorSelect, handleAllCheckByType }) => {
+  const allChecked = useMemo(() => doctors.every(item => item.checked), [doctors]);
+  const childrenIds = useMemo(() => doctors.map(item => item.contract.id), [doctors]);
 
-  const Group = ({ list, name }) => {
-    const allChecked = useMemo(() => list.every(item => item.checked), [list]);
-    const childrenIds = useMemo(() => list.map(item => item.id), [list]);
+  console.log('childrenIds', childrenIds);
 
-    return (
-      <div className="leftbar-list__category-label">
-        <div 
-          onClick={() => handleAllCheckByType(childrenIds, !allChecked)}
-          className="text-left"
-        >
-          <input
-            readOnly
-            type='checkbox'
-            className="doctors-checkbox-name"
-            checked={allChecked}
-          />
-          <span className="p-3 d-inline-block">{name}</span>
-        </div>
-        {
-          list && list.map(doctor => (
-            <DoctorLine key={doctor.id} doctor={doctor} handleDoctorSelect={handleDoctorSelect} />
-          ))
-        }
+  return (
+    <div className="leftbar-list__category-label">
+      <div
+        onClick={() => handleAllCheckByType(childrenIds, !allChecked)}
+        className="text-left"
+      >
+        <input
+          readOnly
+          type='checkbox'
+          className="doctors-checkbox-name"
+          checked={allChecked}
+        />
+        <span className="p-3 d-inline-block">{name}</span>
       </div>
-    );
-  }
-
-  return (<Group list={data} name={name}/>)
+      {
+        doctors && doctors.map(doctor => (
+          <DoctorLine key={doctor.contract.id} doctor={doctor} handleDoctorSelect={handleDoctorSelect} />
+        ))
+      }
+    </div>
+  );
 }
 
 export default memo(GroupedByTypeList);

@@ -6,8 +6,6 @@ import AppModal from './AppModal';
 import { setCurrentDoctor } from '../../redux/actions/doctorsActions';
 import { appointmentTypes } from '../../redux/constants/constants';
 
-const hour = 60;
-
 const slotCaptions = {
   [appointmentTypes.STUDY]: 'Обучение',
   [appointmentTypes.PAPERWORK]: 'Работа с документами',
@@ -18,120 +16,70 @@ const slotCaptions = {
 const AppointmentTime = memo((props) => {
   const selectedPatient = useSelector((state) => state.patients.selectedPatient);
 
-  const { fillStatus, startMoment } = props;
-  const { showModal, rangeString } = props;
+  const { fillStatus, fillType } = props;
+  const { showModal, startMoment, rangeString } = props;
 
-  const handleClick = (appointment) => () => showModal({
+  const handleClick = (patient) => () => showModal({
     startMoment,
     rangeString,
-    fillStatus: appointment,
+    patient,
     appointmentCount: fillStatus.length,
   });
 
   const isAvailable = fillStatus.length < 2 &&
     (!selectedPatient || fillStatus.every(app => !app.patient || app.patient.id !== selectedPatient.id));
 
-  if (!fillStatus.length) {
-    return (
-      <div
-        className={`schedule-day__time ${isAvailable ? 'schedule-day__time_available' : ''}`}
-        onClick={handleClick(null)}
-        title={isAvailable && 'Время доступно для записи'}
-      >
-        {startMoment.format("HH:mm")}
-      </div>
-    );
-  }
-
-  let dateAdded; // scary side-effects involved
-  const fillContent = fillStatus.map((slot, index) => {
-    if(slot.appointmentType === appointmentTypes.PATIENT) {
-      const shortName = slot.patient.name.split(/\s+/).map((w,i) => i ? w.substring(0,1).toUpperCase() + '.' : w).join(' ');
-      const shortDate = moment(slot.date).format("HH:mm")
-
-      const result = (
-        <React.Fragment key={index}>
-          {!dateAdded && (<div className="schedule-day__time">{shortDate}</div>)}
-          <div
-            className={`schedule-day__time schedule-table-time-box__appointment  ${isAvailable ? 'schedule-day__time_available' : ''}`}
-            onClick={handleClick(slot)}
-            title={`${rangeString} ${shortName}`}
-          >
-            {shortName}
-          </div>
-        </React.Fragment>
+  let content;
+  if (fillType === appointmentTypes.PATIENT) {
+    if (!fillStatus.length) {
+      content = (
+        <div
+          className={`schedule-day__time-row schedule-table-time-box__appointment ${isAvailable ? 'schedule-day__time-row_available' : ''}`}
+          onClick={handleClick(null)}
+          title={isAvailable && 'Время доступно для записи'}
+        >
+          {startMoment.format("HH:mm")}
+        </div>
       );
-      dateAdded = true;
-      return result;
+    } else {
+      const patients = fillStatus.map(({ patient }) => {
+        const text = patient.name.split(/\s+/)
+          .map((word, idx) => idx === 0 ? `${word} ` : `${word[0]}.`)
+          .join('');
+        return (<div
+          key={`${patient.id}`}
+          className={`schedule-day__time-row schedule-table-time-box__appointment  ${isAvailable ? 'schedule-day__time-row_available' : ''}`}
+          onClick={handleClick(patient)}
+          title={`${rangeString} ${patient.name}`}
+        >
+          {text}
+        </div>)
+      })
+      content = (<React.Fragment>
+        <div className="schedule-day__time-row">{startMoment.format('HH:mm')}</div>
+        {patients}
+      </React.Fragment>)
     }
-
-    return (<div key={index} className="schedule-day__activity-secondary">
-      {slotCaptions[slot.appointmentType] || ":"}
+  } else {
+    content = (<div className="schedule-day__activity-secondary">
+      {rangeString} <br />
+      {slotCaptions[fillType] || ":"}
     </div>);
-  });
+  }
 
   return (
     <div className="schedule-table-time-box">
-      {fillContent}
+      {content}
     </div>
   );
 });
 
-const DoctorWorkday = ({ doctor, day }) => {
+const DoctorWorkday = ({ doctor, day, schedule }) => {
   const [modalData, setModalData] = useState(null);
   const dispatch = useDispatch();
 
-  const timeRange = parseInt(doctor.end, 10) - parseInt(doctor.start, 10);
-  const intervalMinutes = timeRange * hour;
-  const appointmentsNumber = intervalMinutes / parseInt(doctor.interval, 10);
-  const appointmentSlots = [];
-
-  const [ startHours, startMinutes ] = doctor.start.split(':').map(x => Number.parseInt(x, 10));
-  const start = startHours * hour + startMinutes;
-  for (let i = 0; i < appointmentsNumber; i++) {
-    const cur = start + doctor.interval * i;
-    const curHours = Math.floor(cur / 60);
-    const curMins = cur % 60;
-    const curMinsString = ('0'+curMins).substr(-2);
-
-    const next = cur + doctor.interval;
-    const nextHours = Math.floor(next / 60);
-    const nextMins = next % 60;
-    const nextMinsString = ('0'+nextMins).substr(-2);
-
-    const periodStartMoment = moment(day);
-    periodStartMoment.set('hour', curHours);
-    periodStartMoment.set('minute', curMins);
-
-    const fillStatus =  doctor.appointments.filter(app => {
-      if(app.appointmentType === appointmentTypes.PATIENT && app.date){
-        return moment(app.date).isSame(periodStartMoment);
-      }
-
-      if(app.appointmentType === appointmentTypes.STUDY || app.appointmentType === appointmentTypes.PAPERWORK) {
-        const timeFrom = moment(day).isoWeekday(app.dayFrom);
-        const timeTo = moment(day).isoWeekday(app.dayTo);
-        const isCurDay = moment(day).isBetween(timeFrom, timeTo, undefined, '[]');
-
-        if(isCurDay) {
-          const currentDayFrom = moment(day).hours(app.timeFrom.substring(0,2)).minutes(app.timeFrom.substring(0,-2));
-          const currentDayTo = moment(day).hours(app.timeTo.substring(0,2)).minutes(app.timeTo.substring(0,-2));
-          return moment(periodStartMoment).isBetween(currentDayFrom, currentDayTo, undefined, '[]');
-        }
-        return moment(app.date).isSame(periodStartMoment);
-      }
-      return false;
-    });
-
-    appointmentSlots.push({
-      time: `${curHours}:${curMinsString}`,
-      rangeString: `${curHours}:${curMinsString}-${nextHours}:${nextMinsString}`,
-      startMoment: periodStartMoment,
-      fillStatus: fillStatus,
-    });
-  }
-
   const showModal = modalData => {
+    console.log('showModal, doc, start', doctor, modalData.startMoment);
     dispatch(setCurrentDoctor(doctor, modalData.startMoment));
     setModalData(modalData);
   };
@@ -139,6 +87,12 @@ const DoctorWorkday = ({ doctor, day }) => {
   const handleClose = useCallback(() => {
     setModalData(null);
   }, [setModalData]);
+
+  const { timeFrom, timeTo } = doctor.contract.workDay;
+  const startTime = moment().set({ h: timeFrom[0], m: timeFrom[1] })
+    .format('HH:mm');
+  const endTime = moment().set({ h: timeTo[0], m: timeTo[1] })
+    .format('HH:mm');
 
   return (
     <div >
@@ -151,24 +105,20 @@ const DoctorWorkday = ({ doctor, day }) => {
 
         <div className="schedule-day__activity-main">
           <div className="schedule-day__activity-title">
-            {doctor.medicalFacility} ({doctor.room})
+            {doctor.medicalFacility} ({doctor.contract.room})
           </div>
-          <div className="schedule-day__activity-body">{doctor.start}-{doctor.end}</div>
+          <div className="schedule-day__activity-body">{startTime}-{endTime}</div>
         </div>
         <div  className="schedule-day__time">
-          {appointmentSlots.map(({ time, rangeString, startMoment, fillStatus }) =>
+          {schedule.map((slot) =>
             <AppointmentTime
-              key={rangeString}
-              time={time}
-              rangeString={rangeString}
-              startMoment={startMoment}
+              key={slot.rangeString}
               showModal={showModal}
-              fillStatus={fillStatus}
+              {...slot}
             />
           )}
         </div>
       </article>
-
       <AppModal
         show={modalData !== null}
         handleClose={handleClose}

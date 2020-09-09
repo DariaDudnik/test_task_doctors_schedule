@@ -11,7 +11,7 @@ function *fetchDoctors() {
   try {
     const data = yield call(getDoctorsList);
 
-    yield put(requestDoctorsListSuccess(data.doctors));
+    yield put(requestDoctorsListSuccess(data));
   } catch (error) {
     yield put({
       type:   REQUEST_DOCTORS_LIST_FAILED,

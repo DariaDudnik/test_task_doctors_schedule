@@ -1,6 +1,6 @@
-import doctorsArray from '../stub-data/doctorsData.json';
 import patientsArray from '../stub-data/patientsData.json';
 import messages from '../stub-data/messagesData.json';
+import doctorsInfo from '../stub-data/doctors-data';
 
 const delayed = (data) => new Promise(resolve => {
   setTimeout(() => {
@@ -9,7 +9,7 @@ const delayed = (data) => new Promise(resolve => {
 });
 
 export function getDoctorsList() {
- return delayed(doctorsArray);
+ return delayed(doctorsInfo);
 }
 
 export function getPatientsList() {

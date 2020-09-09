@@ -17,7 +17,7 @@ const AppointmentTime = memo((props) => {
   const selectedPatient = useSelector((state) => state.patients.selectedPatient);
 
   const { fillStatus, fillType } = props;
-  const { showModal, startMoment, rangeString } = props;
+  const { showModal, startMoment, rangeString, interval } = props;
 
   const handleClick = (patient) => () => showModal({
     startMoment,
@@ -30,7 +30,7 @@ const AppointmentTime = memo((props) => {
   let isAvailable = fillStatus.length < 2 &&
     (!selectedPatient || fillStatus.every(app => !app.patient || app.patient.id !== selectedPatient.id));
 
-  if (isAvailable && startMoment < moment().add(30, 'minutes')) {
+  if (isAvailable && startMoment < moment().add(interval, 'minutes')) {
     isAvailable = false;
     tooltipMessage = 'Запись на прошедший временной интервал недоступна';
   }
@@ -102,6 +102,8 @@ const DoctorWorkday = ({ doctor, day, schedule }) => {
   const endTime = moment().set({ h: timeTo[0], m: timeTo[1] })
     .format('HH:mm');
 
+  const { interval } = doctor.contract;
+
   return (
     <div >
       <article className="main-container__schedule-day">
@@ -122,6 +124,7 @@ const DoctorWorkday = ({ doctor, day, schedule }) => {
             <AppointmentTime
               key={slot.rangeString}
               showModal={showModal}
+              interval={interval}
               {...slot}
             />
           )}

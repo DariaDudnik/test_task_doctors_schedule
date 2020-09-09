@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import Modal from 'react-modal';
+import moment from 'moment';
 import { createAppointment } from '../../redux/actions/doctorsActions';
 import { useDispatch, useSelector } from 'react-redux';
 import SuccessModal  from './SuccessModal';
@@ -192,6 +193,10 @@ const AppModal = ({ handleClose, show, modalData }) => {
     const canCreate = selectedPatient && modalData.appointmentCount < 2 &&
       (!isApppointment || selectedPatient.id !== modalData.patient.id);
 
+    const interval = doctor.contract.interval;
+    const canCancel = selectedDate > moment().add(interval, 'minutes');
+    const cancelText = canCancel ? 'Отменить запись' : 'Нельзя отменить запись';
+
     const modalHeader =
     isApppointment ? (
       <React.Fragment>
@@ -238,10 +243,10 @@ const AppModal = ({ handleClose, show, modalData }) => {
           <div style={customStyles.modalBodyBlock}>
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">delete</i></div>
             <span
-              style={isApppointment ? customStyles.modalBodyCancelSpan : customStyles.disabled}
+              style={(isApppointment && canCancel) ? customStyles.modalBodyCancelSpan : customStyles.disabled}
               onClick={handleAppCancellation}
             >
-              Отменить запись
+              {cancelText}
             </span>
           </div>
         </div>

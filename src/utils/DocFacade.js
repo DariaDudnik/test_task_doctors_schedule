@@ -205,6 +205,10 @@ class DocFacade {
       interval,
     }, quotasOfTheDay);
 
+    if (quotasOfTheDay.some(quota => quota.fillType === quotasTypes.PATIENT)) {
+      schedule.hasAppointmentSlots = true;
+    }
+
     const scheduleI = schedule[Symbol.iterator]();
     let { value: slot } = scheduleI.next();
     appointments.forEach(app => {

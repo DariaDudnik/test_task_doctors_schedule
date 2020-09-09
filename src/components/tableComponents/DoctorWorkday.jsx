@@ -80,7 +80,7 @@ const AppointmentTime = memo((props) => {
   } else if (fillStatus.length) {
     const partBefore = `${startMoment.format('HH:mm')}-${fillStatus[0].startMoment.format('HH:mm')}`;
     const lastAppoinment = fillStatus[fillStatus.length - 1];
-    const partAfter = `${lastAppoinment.startMoment.format('HH:mm')}-${endMoment.format('HH:mm')}`;
+    const partAfter = `${lastAppoinment.endMoment.format('HH:mm')}-${endMoment.format('HH:mm')}`;
     return (<React.Fragment>
       <div className="schedule-table-time-box">
         <div className="schedule-day__activity-secondary">
@@ -89,11 +89,11 @@ const AppointmentTime = memo((props) => {
         </div>
       </div>
       <div className="schedule-table-time-box">
-        {fillStatus.map(({ patient }) => (<PatientRow
+        {fillStatus.map(({ patient, startMoment, endMoment }) => (<PatientRow
           date={fillStatus[0].startMoment}
           key={`${patient.id}`}
           patient={patient}
-          rangeString={rangeString}
+          rangeString={`${startMoment.format('HH:mm')}-${endMoment.format('HH:mm')}`}
           nameWidth={nameWidth}
           handleClick={handleClick}
           isAvailable={false}

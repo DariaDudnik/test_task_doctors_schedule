@@ -27,12 +27,14 @@ class DocFacade {
   }
 
   static intervalContains(block, container) {
-    return block.startMoment >= container.startMoment && block.endMoment < container.endMoment;
+    return block.startMoment >= container.startMoment && block.endMoment <= container.endMoment;
   }
 
   static injectQuotas(blocks, quotas) {
+    console.log('Injecting quotas', quotas);
     let unitedBlocks = blocks.slice();
     const nonPatientQuotas = quotas.filter(block => block.fillType !== quotasTypes.PATIENT);
+    console.log('nonPatientQuotas', nonPatientQuotas);
 
     nonPatientQuotas.forEach((quota) => {
       const patientBlocks = unitedBlocks.filter(block => block.fillType === quotasTypes.PATIENT);

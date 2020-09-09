@@ -119,6 +119,16 @@ class DocFacade {
         time = timeEnd;
         timeEnd = moment(timeEnd).add(borders.interval, 'minutes');
       }
+      const timeEndMinimal = moment(time).add(borders.interval * 0.8, 'minutes');
+      if (timeEndMinimal <= block.endMoment) {
+        schedule.push(
+          DocFacade.makeInterval(quotasTypes.PATIENT, {
+            start: moment(time),
+            end: moment(block.endMoment),
+          }),
+        );
+      }
+      time = timeEnd;
     });
 
     return schedule;

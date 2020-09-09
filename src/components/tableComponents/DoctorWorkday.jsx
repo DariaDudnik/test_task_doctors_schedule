@@ -13,14 +13,28 @@ const slotCaptions = {
   [appointmentTypes.NOAPP]: 'Врач не принимает',
 }
 
+const PatientRow = (({ patient, date, rangeString, nameWidth, handleClick, isAvailable }) => {
+  const text = patient.name.split(/\s+/)
+    .map((word, idx) => idx === 0 ? `${word} ` : `${word[0]}.`)
+    .join('');
+  return (<div
+    style={nameWidth}
+    className={`appointment-tooltip schedule-day__time-row schedule-table-time-box__appointment  ${isAvailable ? 'schedule-day__time-row_available' : ''}`}
+    onClick={handleClick(patient, date)}
+  >
+    <div className="patient-name">{text}</div>
+    <span className="appointment-tooltip__text">{`${rangeString} ${patient.name}`}</span>
+  </div>)
+})
+
 const AppointmentTime = memo((props) => {
   const selectedPatient = useSelector((state) => state.patients.selectedPatient);
 
   const { fillStatus, fillType } = props;
-  const { showModal, startMoment, rangeString, interval } = props;
+  const { showModal, startMoment, endMoment, rangeString, interval } = props;
 
-  const handleClick = (patient) => () => showModal({
-    startMoment,
+  const handleClick = (patient, start) => () => showModal({
+    startMoment: start || startMoment,
     rangeString,
     patient,
     appointmentCount: fillStatus.length,
@@ -36,6 +50,7 @@ const AppointmentTime = memo((props) => {
   }
 
   let content;
+  const nameWidth = { width: `calc((100% - 46px)/${fillStatus.length})`};
   if (fillType === appointmentTypes.PATIENT) {
     if (!fillStatus.length) {
       content = (
@@ -48,26 +63,49 @@ const AppointmentTime = memo((props) => {
         </div>
       );
     } else {
-      const nameWitdh = { width: `calc((100% - 46px)/${fillStatus.length})`};
-      const patients = fillStatus.map(({ patient }) => {
-        const text = patient.name.split(/\s+/)
-          .map((word, idx) => idx === 0 ? `${word} ` : `${word[0]}.`)
-          .join('');
-        return (<div
-          key={`${patient.id}`}
-          style={nameWitdh}
-          className={`appointment-tooltip schedule-day__time-row schedule-table-time-box__appointment  ${isAvailable ? 'schedule-day__time-row_available' : ''}`}
-          onClick={handleClick(patient)}
-        >
-          <div className="patient-name">{text}</div>
-          <span className="appointment-tooltip__text">{`${rangeString} ${patient.name}`}</span>
-        </div>)
-      })
+      const patients = fillStatus.map(({ patient }) => (<PatientRow
+        patient={patient}
+        key={`${patient.id}`}
+        rangeString={rangeString}
+        nameWidth={nameWidth}
+        handleClick={handleClick}
+        isAvailable={isAvailable}
+      />));
+
       content = (<React.Fragment>
         <div className="schedule-day__time-row">{startMoment.format('HH:mm')}</div>
         {patients}
       </React.Fragment>)
     }
+  } else if (fillStatus.length) {
+    const partBefore = `${startMoment.format('HH:mm')}-${fillStatus[0].startMoment.format('HH:mm')}`;
+    const lastAppoinment = fillStatus[fillStatus.length - 1];
+    const partAfter = `${lastAppoinment.startMoment.format('HH:mm')}-${endMoment.format('HH:mm')}`;
+    return (<React.Fragment>
+      <div className="schedule-table-time-box">
+        <div className="schedule-day__activity-secondary">
+          {partBefore} <br />
+          {slotCaptions[fillType] || ":"}
+        </div>
+      </div>
+      <div className="schedule-table-time-box">
+        {fillStatus.map(({ patient }) => (<PatientRow
+          date={fillStatus[0].startMoment}
+          key={`${patient.id}`}
+          patient={patient}
+          rangeString={rangeString}
+          nameWidth={nameWidth}
+          handleClick={handleClick}
+          isAvailable={false}
+        />))}
+      </div>
+      <div className="schedule-table-time-box">
+        <div className="schedule-day__activity-secondary">
+          {partAfter} <br />
+          {slotCaptions[fillType] || ":"}
+        </div>
+      </div>
+    </React.Fragment>);
   } else {
     content = (<div className="schedule-day__activity-secondary">
       {rangeString} <br />

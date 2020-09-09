@@ -31,10 +31,8 @@ class DocFacade {
   }
 
   static injectQuotas(blocks, quotas) {
-    console.log('Injecting quotas', quotas);
     let unitedBlocks = blocks.slice();
     const nonPatientQuotas = quotas.filter(block => block.fillType !== quotasTypes.PATIENT);
-    console.log('nonPatientQuotas', nonPatientQuotas);
 
     nonPatientQuotas.forEach((quota) => {
       const patientBlocks = unitedBlocks.filter(block => block.fillType === quotasTypes.PATIENT);
@@ -129,6 +127,7 @@ class DocFacade {
             end: moment(block.endMoment),
           }),
         );
+        schedule.hasAppointmentSlots = true; // just in case
       }
       time = timeEnd;
     });
@@ -209,12 +208,24 @@ class DocFacade {
     const scheduleI = schedule[Symbol.iterator]();
     let { value: slot } = scheduleI.next();
     appointments.forEach(app => {
-      while (slot.startMoment < app.date) {
-        ({ value: slot } = scheduleI.next());
+      if (!slot) {
+        return;
       }
 
-      if (slot.startMoment.isSame(app.date)) {
-        slot.fillStatus.push(app);
+      while (slot.endMoment.isBefore(moment(app.date))) {
+        ({ value: slot } = scheduleI.next());
+        if (!slot) {
+          return;
+        }
+      }
+
+      if (moment(app.date).isSameOrAfter(slot.startMoment) && moment(app.date).add(interval, 'minutes') <= slot.endMoment) {;
+        slot.fillStatus.push({
+          ...app,
+          startMoment: moment(app.date),
+          endMoment: moment(app.date).add(interval, 'minutes'),
+        });
+        schedule.hasAppointmentSlots = true;
       }
     });
 
@@ -223,4 +234,3 @@ class DocFacade {
 }
 
 export default DocFacade;
-

@@ -64,7 +64,7 @@ const doctorContracts = [{
     type: quotasTypes.OFF,
     name: 'Врач не работает',
     days: null,
-    timeFrom: [14, 0],
+    timeFrom: [13, 55],
     timeTo: [15, 0],
   }, {
     type: quotasTypes.PATIENT,
@@ -188,10 +188,10 @@ const applyAppointments = (doctors) => {
     date: moment().set({ h: 10, m: 30, s: 0, ms: 0 }).toDate(),
   }];
 
-  // doctors[1].contract.appointments = [{
-  //   patient: patients[3],
-  //   date: moment().weekday(0).set({ h: 9, m: 30, s: 0, ms: 0 }).toDate(),
-  // }];
+  doctors[1].contract.appointments = [{
+    patient: patients[3],
+    date: moment().weekday(7).set({ h: 10, m: 30, s: 0, ms: 0 }).toDate(),
+  }];
 
   return doctors;
 };

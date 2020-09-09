@@ -75,7 +75,7 @@ const doctors = (state = initialState, action) => {
         break;
       case CANCEL_APPOINTMENT:
         const doctors = draftState.doctorsList;
-        const doctorCancelIdx = doctors.findIndex(doc => doc.id === action.payload.doctor.id);
+        const doctorCancelIdx = doctors.findIndex(doc => doc.contract.id === action.payload.doctor.contract.id);
         if (doctorCancelIdx === -1) {
           return;
         }
@@ -83,7 +83,7 @@ const doctors = (state = initialState, action) => {
 
         const appToDeleteIdx = doctor.contract.appointments
           .findIndex(app => {
-            const sameTime = moment(app.date).isSame(action.payload.date);
+            const sameTime = moment(app.date).isSame(action.payload.date, 'second');
             const samePatient = app.patient.id === action.payload.patient.id;
             return sameTime && samePatient;
           });

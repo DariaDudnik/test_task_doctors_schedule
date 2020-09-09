@@ -43,11 +43,12 @@ const DoctorsWidget = () => {
   }
 
   const handleSearch = event => {
-    const text = event.target.value.toLowerCase();
+    const text = event.target.value;
 
+    const search = text.toLowerCase();
     const results = list.filter(({ name, type }) =>
-      name.toLowerCase().indexOf(text) === 0 ||
-      type.toLowerCase().indexOf(text) === 0
+      name.toLowerCase().indexOf(search) === 0 ||
+      type.toLowerCase().indexOf(search) === 0
     );
     setSearchTerm(text);
     setSearchResults(results);

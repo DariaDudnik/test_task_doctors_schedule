@@ -207,5 +207,4 @@ const joinData = (doctors, contracts) => contracts.map(cnt => {
 const data = joinData(doctors, doctorContracts);
 applyAppointments(data);
 
-
 export default data;

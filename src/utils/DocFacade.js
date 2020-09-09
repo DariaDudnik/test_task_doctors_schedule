@@ -4,7 +4,7 @@ import moment from 'moment';
 class DocFacade {
   static isWorkingDay(doctor, date) {
     const { contract } = doctor;
-    const weekDay = moment(date).day();
+    const weekDay = moment(date).weekday();
 
     return (
       (!contract.period || (
@@ -162,7 +162,7 @@ class DocFacade {
 
   static makeDaySchedule(doctor, date) {
     const momentDate = moment(date).set({ h: 0, m: 0, s: 0, ms: 0 });
-    const weekDay = momentDate.day();
+    const weekDay = momentDate.weekday();
 
     const { contract } = doctor;
     if (!DocFacade.isWorkingDay(doctor, date)) {

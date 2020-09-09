@@ -86,3 +86,8 @@
 .left-bar-container__block__bottom .react-datepicker .react-datepicker__day--selected {
 	border-radius: 50%;
 }
+
+.react-datepicker__day--highlight-appointments {
+	background-color: hsl(90, 50, 60);
+	color: lightblue;
+}

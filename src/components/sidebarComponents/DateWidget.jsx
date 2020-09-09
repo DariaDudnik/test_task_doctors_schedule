@@ -89,11 +89,11 @@ const DateWidget = () => {
           <div className="pb-2">
             <button className="btn btn-secondary btn-sm mr-3" onClick={handleCancel}>
               <FontAwesomeIcon icon={faTimes} />
-              Отменить
+              &nbsp;Отменить
             </button>
             <button className="btn btn-success btn-sm" onClick={handleOk}>
               <FontAwesomeIcon icon={faCheck} />
-              Ок
+              &nbsp;Ок
             </button>
           </div>
         </DatePicker>

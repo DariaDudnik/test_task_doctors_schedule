@@ -12,7 +12,6 @@ const DoctorsWidget = () => {
   const dispatch = useDispatch();
   const [groupedByType, setGroupedByType] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
   const [allChecked, setAllChecked] = useState(false);
 
   const numberOfCheckedDoctors = useMemo(() => (list && list.filter(x => x.checked).length), [list]);
@@ -26,10 +25,7 @@ const DoctorsWidget = () => {
     setAllChecked(isAllChecked);
   }, [list])
 
-  const handleDoctorSelect = (contractId) => {
-    dispatch(toggleDoctor(contractId));
-    setSearchTerm('');
-  };
+  const handleDoctorSelect = (contractId) => dispatch(toggleDoctor(contractId));
 
   const handleAllCheck = e => {
     dispatch(toggleAllDoctors(true));
@@ -42,17 +38,13 @@ const DoctorsWidget = () => {
     dispatch(toggleAllDoctors(false));
   }
 
-  const handleSearch = event => {
-    const text = event.target.value;
-
-    const search = text.toLowerCase();
-    const results = list.filter(({ name, type }) =>
-      name.toLowerCase().indexOf(search) === 0 ||
-      type.toLowerCase().indexOf(search) === 0
+  const searchResults = useMemo(() => {
+    const text = searchTerm.toLowerCase();
+    return list.filter(({ name, type }) =>
+      name.toLowerCase().indexOf(text) === 0 ||
+      type.toLowerCase().indexOf(text) === 0
     );
-    setSearchTerm(text);
-    setSearchResults(results);
-  };
+  }, [list, searchTerm]);
 
   let searchItems;
   if (searchTerm < 3) {
@@ -64,7 +56,7 @@ const DoctorsWidget = () => {
       <Dropdown.Item
         key={String(doctor.id)}
         eventKey="1"
-        onClick={() => handleDoctorSelect(doctor.contract.id)}
+        onClick={() => !doctor.checked && handleDoctorSelect(doctor.contract.id)}
         id={doctor.id}
       >
         {doctor.name}({doctor.type})
@@ -112,7 +104,7 @@ const DoctorsWidget = () => {
           <input
             type="search"
             placeholder="Введите текст для поиска"
-            onChange={handleSearch}
+            onChange={(e) => setSearchTerm(e.target.value)}
             value={searchTerm}
           />
           <div className="input-button">

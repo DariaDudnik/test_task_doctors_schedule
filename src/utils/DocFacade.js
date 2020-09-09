@@ -208,18 +208,11 @@ class DocFacade {
     const scheduleI = schedule[Symbol.iterator]();
     let { value: slot } = scheduleI.next();
     appointments.forEach(app => {
-      if (!slot) {
-        return;
-      }
-
-      while (slot.endMoment.isBefore(moment(app.date))) {
+      while (slot.endMoment.isSameOrBefore(moment(app.date))) {
         ({ value: slot } = scheduleI.next());
-        if (!slot) {
-          return;
-        }
       }
 
-      if (moment(app.date).isSameOrAfter(slot.startMoment) && moment(app.date).add(interval, 'minutes') <= slot.endMoment) {;
+      if (moment(app.date).isSameOrAfter(slot.startMoment) && moment(app.date).add(interval, 'minutes').isSameOrBefore(slot.endMoment)) {
         slot.fillStatus.push({
           ...app,
           startMoment: moment(app.date),

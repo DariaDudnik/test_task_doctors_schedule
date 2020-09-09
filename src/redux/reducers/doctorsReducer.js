@@ -64,12 +64,9 @@ const doctors = (state = initialState, action) => {
         break;
       case CREATE_APPOINTMENT:
         const doctorIdx = draftState.doctorsList.findIndex(doc => doc.contract.id === action.payload.doctor.contract.id);
-        console.log('CREATE_APPOINTMENT', doctorIdx)
         if (doctorIdx === -1) {
           return;
         }
-
-        console.log('CREATE_APPOINTMENT', state.doctorsList[doctorIdx])
 
         draftState.doctorsList[doctorIdx].contract.appointments.push(action.payload);
         break;

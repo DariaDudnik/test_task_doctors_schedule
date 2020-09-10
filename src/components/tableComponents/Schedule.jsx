@@ -12,9 +12,6 @@ const Schedule = () => {
   const timeRangeFrom = useSelector((state) => state.schedule.timeRangeFrom);
   const timeRangeTo = useSelector((state) => state.schedule.timeRangeTo);
 
-  const doctorsList = useSelector((state) => state.doctors.doctorsList);
-  const selectedDoctors = useMemo(() => doctorsList.filter(d => d.checked), [doctorsList]);
-
   const daysRange = useMemo(() => {
     const range =  moment.range(timeRangeFrom, timeRangeTo);
 
@@ -22,6 +19,7 @@ const Schedule = () => {
   }, [timeRangeFrom, timeRangeTo]);
 
   const doctors = useSelector(state => state.doctors.doctorsList);
+  const selectedDoctors = useMemo(() => doctors.filter(d => d.checked), [doctors]);
 
   const docSchedules = useMemo(() => {
     return daysRange.map(day => {

@@ -1,27 +1,14 @@
 import React, { useState, useCallback } from 'react';
 import Modal from 'react-modal';
 import moment from 'moment';
-import { createAppointment } from '../../redux/actions/doctorsActions';
+import { createAppointment } from '../../../redux/actions/doctorsActions';
 import { useDispatch, useSelector } from 'react-redux';
 import SuccessModal  from './SuccessModal';
 import ShowAppModal  from './ShowAppModal';
 import CancelAppModal from './CancelAppModal';
+import baseModalStyle from "./baseModalStyle";
 
 const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
-  },
-  overlay: {
-    zIndex: "10"
-  },
-  modalContainer: {
-    color: "darkblue"
-  },
   modalHeaderBlock: {
     display: "flex",
     alignItems: "center",
@@ -72,71 +59,15 @@ const customStyles = {
   modalBodyCancelSpan: {
     color: "red",
   },
-  successModal: {
-    width: "250px",
-    border: "2px solid rgb(22, 170, 22)",
-    borderRadius: "0.3rem",
-  },
-  successModalTitle: {
-    fontSize: "2rem",
-    textAlign: "center",
-    background: "rgb(22, 170, 22)",
-    borderRadius: "0.2rem 0.2rem 0 0",
-  },
-  successModalBody: {
-    display: "flex",
-    height: "200px",
-    color:" rgb(22, 170, 22)",
-    background: "rgb(227, 250, 227)",
-  },
-  successModalBodyIcon: {
-    margin: "auto",
-    fontSize: "6rem",
-  },
-  declineModal:{
-    width: "250px",
-    border: "1px solid grey",
-    padding: "1rem",
-    display: "flex",
-    flexDirection: "column",
-  },
-  declineModalTitle:{
-    display: "flex",
-    marginBottom: "2rem",
-    alignSelf: "center",
-    alignItems: "center",
-  },
-  declineModalTitleIcon: {
-    color: "red",
-    marginRight: "0.5rem",
-  },
-  declineModalText: {
-    textAlign: "center",
-    marginBottom: "2rem",
+  textBoldInfo: {
+    fontWeight: "bold",
+    flex: "1 1 50%"
   },
   disabled:{
     pointerEvents: "none",
     opacity: "0.7",
     color:  "grey",
   },
-  declineModalButton: {
-    background: "red",
-    color: "white",
-    borderRadius: "0.5rem",
-    border: "1px solid grey",
-    marginBottom: "2rem",
-    padding: "0.5rem",
-    width: "50%",
-    alignSelf: "center",
-  },
-  declineModalBackLink: {
-    textDecoration: "underline",
-    textAlign: "center",
-  },
-  textBoldInfo: {
-    fontWeight: "bold",
-    flex: "1 1 50%"
-  }
 };
 
 const AppModal = ({ handleClose, show, modalData }) => {
@@ -188,19 +119,19 @@ const AppModal = ({ handleClose, show, modalData }) => {
 
   let mainModal;
   if (modalData && !showCancelModal && !showModalSuccess && !showAppModalOpen) {
-    const isApppointment = !!modalData.patient;
+    const isAppointment = !!modalData.patient;
 
     const interval = doctor.contract.interval;
 
     const isEnoughTime = selectedDate > moment().add(interval, 'minutes');
 
     const canCreate = selectedPatient && modalData.appointmentCount < 2 &&
-      (!isApppointment || selectedPatient.id !== modalData.patient.id) && isEnoughTime;
+      (!isAppointment || selectedPatient.id !== modalData.patient.id) && isEnoughTime;
 
     const cancelText = isEnoughTime ? 'Отменить запись' : 'Нельзя отменить запись';
 
     const modalHeader =
-    isApppointment ? (
+    isAppointment ? (
       <React.Fragment>
         <div style={customStyles.modalHeaderBlockNext}><i className="large material-icons">person_pin</i></div>
         <span style={customStyles.modalHeaderBlockNextSpan}>{modalData.patient.name}</span>
@@ -215,7 +146,7 @@ const AppModal = ({ handleClose, show, modalData }) => {
     mainModal = (<Modal
         isOpen={show}
         onRequestClose={handleClose}
-        style={customStyles}
+        style={baseModalStyle}
         className={""}
         contentLabel="appointmentModal"
         ariaHideApp={false}
@@ -227,7 +158,7 @@ const AppModal = ({ handleClose, show, modalData }) => {
           <div style={customStyles.modalBodyBlock}>
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">assignment</i></div>
             <span
-              style={!isApppointment ? customStyles.disabled : {}}
+              style={!isAppointment ? customStyles.disabled : {}}
               onClick={handleAppShow}
             >
               Просмотреть запись
@@ -245,7 +176,7 @@ const AppModal = ({ handleClose, show, modalData }) => {
           <div style={customStyles.modalBodyBlock}>
             <div style={customStyles.modalBodyBlockNextDiv}><i className="large material-icons">delete</i></div>
             <span
-              style={(isApppointment && isEnoughTime) ? customStyles.modalBodyCancelSpan : customStyles.disabled}
+              style={(isAppointment && isEnoughTime) ? customStyles.modalBodyCancelSpan : customStyles.disabled}
               onClick={handleAppCancellation}
             >
               {cancelText}

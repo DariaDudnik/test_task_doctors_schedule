@@ -1,6 +1,5 @@
 import {
   SELECT_DATE,
-  TOGGLE_CALENDAR,
   SET_TIME_FILTER,
 } from '../constants/constants';
 import produce from "immer";

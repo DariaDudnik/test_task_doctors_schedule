@@ -142,7 +142,7 @@ const DoctorWorkday = ({ doctor, day, schedule }) => {
   const { interval } = doctor.contract;
 
   return (
-    <div >
+    <div>
       <article className="main-container__schedule-day">
         <div  className="schedule-day__date"><Moment locale="ru" format="ddd. DD MMM" date={day} /></div>
         <div className="schedule-day__person">

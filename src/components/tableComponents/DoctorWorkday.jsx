@@ -125,7 +125,6 @@ const DoctorWorkday = ({ doctor, day, schedule }) => {
   const dispatch = useDispatch();
 
   const showModal = modalData => {
-    console.log('showModal, doc, start', doctor, modalData.startMoment);
     dispatch(setCurrentDoctor(doctor, modalData.startMoment));
     setModalData(modalData);
   };

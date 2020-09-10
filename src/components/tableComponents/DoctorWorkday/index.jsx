@@ -4,7 +4,7 @@ import moment from 'moment';
 import Moment from 'react-moment';
 import AppModal from '../AppModal';
 import { setCurrentDoctor } from '../../../redux/actions/doctorsActions';
-import ScheduleBlock from "./ScheduleBlock";
+import ScheduleSlot from "./ScheduleSlot";
 
 const DoctorWorkday = ({ doctor, day, schedule }) => {
   const [modalData, setModalData] = useState(null);
@@ -44,7 +44,7 @@ const DoctorWorkday = ({ doctor, day, schedule }) => {
         </div>
         <div  className="schedule-day__time">
           {schedule.map((slot) =>
-            <ScheduleBlock
+            <ScheduleSlot
               key={slot.rangeString}
               showModal={showModal}
               interval={interval}

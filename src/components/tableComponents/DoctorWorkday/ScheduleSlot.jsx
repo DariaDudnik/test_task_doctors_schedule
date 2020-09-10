@@ -11,7 +11,7 @@ const slotCaptions = {
   [quotasTypes.NOAPP]: 'Врач не принимает',
 };
 
-const ScheduleBlock = (props) => {
+const ScheduleSlot = (props) => {
   const selectedPatient = useSelector((state) => state.patients.selectedPatient);
 
   const { fillStatus, fillType } = props;
@@ -104,4 +104,4 @@ const ScheduleBlock = (props) => {
   );
 };
 
-export default React.memo(ScheduleBlock);
+export default React.memo(ScheduleSlot);

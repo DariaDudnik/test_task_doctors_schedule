@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import Modal from 'react-modal';
 import moment from 'moment';
+import baseModalStyle from "./baseModalStyle";
 
 const ShowAppModal = ({ showAppModalOpen, onRequestClose, modalData, style }) => {
   const currentDoctor = useSelector(state => state.doctors.currentDoctor);
@@ -17,12 +18,12 @@ const ShowAppModal = ({ showAppModalOpen, onRequestClose, modalData, style }) =>
   return (
     <Modal
       isOpen={showAppModalOpen}
-      style={style}
+      style={baseModalStyle}
       onRequestClose={onRequestClose}
       contentLabel="appointmentCancel"
       ariaHideApp={false}
     >
-      <div style={style.modalContainer}>
+      <div style={baseModalStyle.modalContainer}>
         <i className="large material-icons float-right" role="button" onClick={onRequestClose}>close</i>
         <div style={style.modalHeaderBlockCenter}>
           <div style={style.modalHeaderBlockNext}>

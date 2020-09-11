@@ -73,7 +73,7 @@ const DateWidget = () => {
         <DatePicker
           dateFormat="dd/MM/yyyy"
           disabledKeyboardNavigation
-          selected={selectedDate}
+          selected={haveCheckedDoctors ? selectedDate : null}
           onChange={setSelectedDate}
           minDate={new Date()}
           maxDate={addMonths(new Date(), 5)}

@@ -55,8 +55,10 @@ const Schedule = () => {
     let tails = docSchedules.map(({ day, allDocsSchedules })  =>
       <WeekdayGroup key={day.format('MMM Do YY')} day={day} schedules={allDocsSchedules} />);
     content = (<React.Fragment>
-      {heads}
-      <div style={{overflowY: 'auto'}}>
+      <div className="d-flex flex-row justify-content-start">
+        {heads}
+      </div>
+      <div className="container-of-containers">
         {tails}
       </div>
     </React.Fragment>);

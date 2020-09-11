@@ -1,6 +1,6 @@
 import {
-  SELECT_DATE, SET_CURRENT_DOCTOR,
-  SET_TIME_FILTER, TOGGLE_ALL_DOCTORS, TOGGLE_DOCTOR, TOGGLE_DOCTORS_BY_TYPE,
+  SELECT_DATE,
+  SET_TIME_FILTER,
 } from '../constants/constants';
 import produce from "immer";
 import moment from 'moment';

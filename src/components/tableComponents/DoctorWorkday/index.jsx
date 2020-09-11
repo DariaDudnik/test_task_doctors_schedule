@@ -1,7 +1,7 @@
 import React, { memo, useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import moment from 'moment';
-import Moment from 'react-moment';
+// import moment from 'moment';
+// import Moment from 'react-moment';
 import AppModal from '../Modals/AppModal';
 import { setCurrentDoctor } from '../../../redux/actions/doctorsActions';
 import ScheduleSlot from "./ScheduleSlot";

@@ -3,6 +3,7 @@
 @import "../src/single-day.scss";
 
 .App {
+  background-color: rgb(226,226,226);
 	text-align: center;
 	display: grid;
 	grid-template-areas: "header header" "nav table";
@@ -25,6 +26,7 @@
     -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
     -moz-box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
     box-shadow: 0 0 5px rgba(0,0,0,0.5) inset;
+    overflow-x: hidden;
   }
   .search-bar-date {
     display: grid;
@@ -119,6 +121,7 @@
     }
   }
   .schedule-table-filter {
+    width: calc(100vw - 345px);
     justify-content: space-between !important;
     padding: 0 20px;
     grid-template-columns: 1fr 1fr;
@@ -156,7 +159,7 @@
   }
   .left-bar-container {
     background: var(--secondary-color);
-    min-width: 345px;
+    width: 345px;
     z-index: 1;
     height: calc(100vh - 30px);
     display: flex;

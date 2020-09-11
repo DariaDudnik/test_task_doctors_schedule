@@ -4,6 +4,8 @@
   justify-content: center;
   border-top: 1px solid rgb(170, 170, 170);
   height: calc(100vh - 110px);
+  overflow-x: auto;
+  overflow-y: hidden;
 
   .main-container__schedule {
     display: flex;

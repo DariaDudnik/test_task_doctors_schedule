@@ -91,3 +91,11 @@
 	background-color: lightblue;
 	color: black;
 }
+
+.container-of-containers {
+	display: flex;
+	overflow-y: auto;
+	overflow-x: hidden;
+	flex-direction: row;
+	width: fit-content;	
+}

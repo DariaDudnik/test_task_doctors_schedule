@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import DoctorWorkday from './DoctorWorkday';
 import Moment from "react-moment";
 import moment from "moment";
 

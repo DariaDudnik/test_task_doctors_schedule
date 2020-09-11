@@ -69,7 +69,7 @@ const Schedule = () => {
   }
 
   return (
-    <div className="scroll-container">
+    <div className={"scroll-container " + (areNonEmpty ? 'justify-content-start' : '')}>
       {content}
     </div>
   )

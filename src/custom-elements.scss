@@ -100,4 +100,12 @@
 	width: -moz-fit-content;
 	width: fit-content;
 	min-width: 100%;
+
+	-ms-overflow-style: none;  /* IE 10+ */
+	scrollbar-width: none; /* Firefox */
+}
+
+.container-of-containers::-webkit-scrollbar { /* chrome based */
+	width: 0;  /* ширина scrollbar'a */
+	background: transparent;  /* опционально */
 }

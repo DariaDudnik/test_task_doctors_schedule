@@ -4,6 +4,7 @@ import momentBase from 'moment';
 import 'moment/locale/ru';
 import { extendMoment } from 'moment-range';
 import WeekdayGroup from './WeekdayGroup';
+import HeadGroup from "./HeadGroup";
 import DocFacade from "../../utils/DocFacade";
 
 const moment = extendMoment(momentBase);
@@ -48,8 +49,17 @@ const Schedule = () => {
       Для просмотра расписания выберите хотя бы один Доступный ресурс
     </div>);
   } else if (areNonEmpty) {
-    content = docSchedules.map(({ day, allDocsSchedules })  =>
-      <WeekdayGroup key={day.format('MMM Do YY')} day={day} schedules={allDocsSchedules} />)
+    let heads = docSchedules.map(({ day, allDocsSchedules }) => (
+      <HeadGroup key={day.format('MMM Do YY')} day={day} schedules={allDocsSchedules} />
+    ));
+    let tails = docSchedules.map(({ day, allDocsSchedules })  =>
+      <WeekdayGroup key={day.format('MMM Do YY')} day={day} schedules={allDocsSchedules} />);
+    content = (<React.Fragment>
+      {heads}
+      <div style={{overflowY: 'auto'}}>
+        {tails}
+      </div>
+    </React.Fragment>);
   } else {
     content =(<div className="empty-data">
       На выбранный период отсутствуют свободные временные интервалы для записи. Выберите другой период

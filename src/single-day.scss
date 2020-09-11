@@ -1,44 +1,47 @@
+.schedule-day__activity-main {
+	text-align: center;
+	.schedule-day__activity-title {
+		background: #81b3ff;
+	}
+	.schedule-day__activity-body {
+		background: var(--primary-color);
+		padding: 0 1rem;
+	}
+}
+
+.schedule-day__person {
+	color: white;
+	background: #acacac;
+	text-align: center;
+	.schedule-day__person-name {
+		border-bottom: 1px solid white;
+	}
+	.schedule-day__person-position {
+		font-style: italic;
+		text-transform: lowercase;
+	}
+}
+
+.schedule-day__time {
+	background: var(--secondary-color);
+	cursor: default;
+}
+
+.schedule-day__date {
+	font-weight: bold;
+	background: rgb(41, 41, 41);
+	color: white;
+	border-radius: 0.3rem 0.3rem 0px 0px;
+	-moz-border-radius: 0.3rem 0.3rem 0px 0px;
+	-webkit-border-radius: 0.3rem 0.3rem 0px 0px;
+	border: 0px solid #000000;
+	text-align: center;
+}
+
 .main-container__schedule-day {
-	margin: 1rem 0 1rem 1rem;
+	margin: 0 0 1rem 1rem;
 	border-radius: 0.3rem;
 	width: 200px;
-
-	.schedule-day__date {
-		font-weight: bold;
-		background: rgb(41, 41, 41);
-		color: white;
-		border-radius: 0.3rem 0.3rem 0px 0px;
-		-moz-border-radius: 0.3rem 0.3rem 0px 0px;
-		-webkit-border-radius: 0.3rem 0.3rem 0px 0px;
-		border: 0px solid #000000;
-		text-align: center;
-	}
-	.schedule-day__person {
-		color: white;
-		background: #acacac;
-		text-align: center;
-		.schedule-day__person-name {
-			border-bottom: 1px solid white;
-		}
-		.schedule-day__person-position {
-			font-style: italic;
-			text-transform: lowercase;
-		}
-	}
-	.schedule-day__activity-main {
-		text-align: center;
-		.schedule-day__activity-title {
-			background: #81b3ff;
-		}
-		.schedule-day__activity-body {
-			background: var(--primary-color);
-			padding: 0 1rem;
-		}
-	}
-	.schedule-day__time {
-		background: var(--secondary-color);
-		cursor: default;
-	}
 
 	.schedule-table-time-box {
 		border-bottom: 1px dashed grey;

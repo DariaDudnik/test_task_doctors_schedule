@@ -36,7 +36,7 @@ const patients = (state = initialState, action) => {
         draftState.selectedPatient = null;
         break;
       default:
-        return state;
+        break;
     }
   });
 };

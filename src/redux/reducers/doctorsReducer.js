@@ -91,6 +91,8 @@ const doctors = (state = initialState, action) => {
 
         draftState.doctorsList[doctorCancelIdx].contract.appointments.splice(appToDeleteIdx, 1)
         break;
+      default:
+        break;
     }
   });
 };

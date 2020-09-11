@@ -36,6 +36,8 @@ const schedule = (state = initialState, action) => {
         draftState.timeRangeTo = timeRangeTo;
         draftState.dayFilterInterval = action.payload;
         break;
+      default:
+        break;
     }
   });
 };
